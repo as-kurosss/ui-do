@@ -71,13 +71,28 @@ export function Editor() {
       if (overId.startsWith('node:')) {
         const parentId = overId.slice(5);
         if (activatorEvent && 'clientX' in activatorEvent) {
-          const hint = computeDropHint(
-            parentId,
-            (activatorEvent as MouseEvent).clientX,
-            (activatorEvent as MouseEvent).clientY,
-          );
-          setDropHint(hint);
-          return;
+          // Gather rects from DOM (transient — moves to Canvas refs in future)
+          const el = document.querySelector(`[data-bn-id="${parentId}"]`);
+          if (el) {
+            const containerRect = el.getBoundingClientRect();
+            const childRects = Array.from(el.children)
+              .filter((child) => child.getAttribute('data-bn-id'))
+              .map((child) => ({
+                id: child.getAttribute('data-bn-id')!,
+                rect: child.getBoundingClientRect(),
+              }));
+            const direction = (el.getAttribute('data-bn-direction') || 'column') as 'row' | 'column';
+            const hint = computeDropHint(
+              parentId,
+              (activatorEvent as MouseEvent).clientX,
+              (activatorEvent as MouseEvent).clientY,
+              containerRect,
+              childRects,
+              direction,
+            );
+            setDropHint(hint);
+            return;
+          }
         }
       }
     }

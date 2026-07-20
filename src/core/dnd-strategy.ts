@@ -88,41 +88,33 @@ export function treeStrategy(args: CollisionDetectionArgs): Collision[] {
 
 /**
  * Вычисляет insert index внутри контейнера на основе позиции указателя.
+ * Rects and direction are passed from outside to avoid DOM queries.
  */
 export function computeDropHint(
   containerId: string,
   pointerX: number,
   pointerY: number,
+  containerRect: DOMRect,
+  childRects: { id: string; rect: DOMRect }[],
+  direction: 'row' | 'column',
 ): DropHint | null {
-  const el = document.querySelector(`[data-bn-id="${containerId}"]`);
-  if (!el) return null;
+  const isRow = direction === 'row';
 
-  const containerRect = el.getBoundingClientRect();
-  const children = Array.from(el.children).filter((child) => child.getAttribute('data-bn-id'));
-
-  // Определяем направление: читаем data-bn-direction (дефолт — column)
-  const dir = el.getAttribute('data-bn-direction') || 'column';
-  const isRow = dir === 'row';
-  // Если нет детей — вставляем внутрь
-  if (children.length === 0) {
-    // Определяем, находится ли указатель в padding-зоне контейнера
-    const cs = getComputedStyle(el);
-    const padTop = parseInt(cs.paddingTop) || 0;
-    const padLeft = parseInt(cs.paddingLeft) || 0;
-    const insideX = pointerX >= containerRect.left + padLeft && pointerX <= containerRect.right;
-    const insideY = pointerY >= containerRect.top + padTop && pointerY <= containerRect.bottom;
+  if (childRects.length === 0) {
+    const insideX = pointerX >= containerRect.left && pointerX <= containerRect.right;
+    const insideY = pointerY >= containerRect.top && pointerY <= containerRect.bottom;
     if (insideX && insideY) {
       return { parentId: containerId, index: 0, edge: 'inside' };
     }
     return null;
   }
 
-  // Находим ближайший child по основной оси
-  let bestIndex = children.length;
+  // Find closest child along the primary axis
+  let bestIndex = childRects.length;
   let bestEdge: 'top' | 'bottom' = 'bottom';
 
-  for (let i = 0; i < children.length; i++) {
-    const childRect = children[i].getBoundingClientRect();
+  for (let i = 0; i < childRects.length; i++) {
+    const childRect = childRects[i].rect;
     const childMid = isRow
       ? childRect.left + childRect.width / 2
       : childRect.top + childRect.height / 2;
@@ -133,7 +125,6 @@ export function computeDropHint(
       bestEdge = 'top';
       break;
     }
-    // Проверка: внутри ли указатель ребёнка
     const childEnd = isRow ? childRect.right : childRect.bottom;
     if (pointerPos <= childEnd) {
       bestIndex = i;
@@ -144,7 +135,7 @@ export function computeDropHint(
     bestEdge = 'bottom';
   }
 
-  // Проверяем, находится ли указатель внутри контейнера (а не вне его)
+  // Verify pointer is inside container
   const insideContainer =
     pointerX >= containerRect.left &&
     pointerX <= containerRect.right &&
