@@ -135,8 +135,10 @@ describe('createDefaultRoot', () => {
 });
 
 describe('wrapNode', () => {
+  const idFactory = () => `n${Math.random().toString(36).slice(2, 10)}` as NodeId;
+
   it('wraps a leaf node in a Layout', () => {
-    const result = wrapNode(root, 'b1');
+    const result = wrapNode(root, 'b1', idFactory);
     expect(result).not.toBeNull();
     const rootNode = findNode(result!, 'root') as LayoutNode;
     expect(rootNode.children).toHaveLength(2);
@@ -147,7 +149,7 @@ describe('wrapNode', () => {
   });
 
   it('wraps a nested node in a Layout', () => {
-    const result = wrapNode(root, 't1');
+    const result = wrapNode(root, 't1', idFactory);
     expect(result).not.toBeNull();
     const inner = findNode(result!, 'inner') as LayoutNode;
     expect(inner.children).toHaveLength(2);
@@ -158,12 +160,12 @@ describe('wrapNode', () => {
   });
 
   it('returns null for root node', () => {
-    const result = wrapNode(root, 'root');
+    const result = wrapNode(root, 'root', idFactory);
     expect(result).toBeNull();
   });
 
   it('wrapper ID is independent of parent/child IDs', () => {
-    const result = wrapNode(root, 'b1');
+    const result = wrapNode(root, 'b1', idFactory);
     expect(result).not.toBeNull();
     const rootNode = findNode(result!, 'root') as LayoutNode;
     const wrapper = rootNode.children[0] as LayoutNode;

@@ -281,7 +281,7 @@ export const useEditorStore = create<EditorState>()(
         set((state) => {
           const screen = findActiveScreen(state);
           if (!screen) return state;
-          const newRoot = treeWrap(screen.root, nodeId);
+          const newRoot = treeWrap(screen.root, nodeId, generateId);
           if (newRoot === null) return state;
           return updateScreenRoot(state, newRoot);
         });

@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import type { SpecNode, NodeId, LayoutNode } from './ir';
 
 /**
@@ -188,16 +187,21 @@ export function findParent(
 
 /**
  * Обёртывает узел `nodeId` в новый Layout-контейнер.
+ * `idFactory` generates the wrapper ID (injected to keep tree.ts pure).
  * Возвращает новое дерево или null, если узел не найден или является корнем.
  */
-export function wrapNode(root: SpecNode, nodeId: NodeId): SpecNode | null {
+export function wrapNode(
+  root: SpecNode,
+  nodeId: NodeId,
+  idFactory: () => NodeId,
+): SpecNode | null {
   const parentInfo = findParent(root, nodeId);
   if (!parentInfo) return null;
 
   const node = findNode(root, nodeId);
   if (!node) return null;
 
-  const wrapperId = `n${nanoid(8)}` as NodeId;
+  const wrapperId = idFactory();
   const wrapper: LayoutNode = {
     kind: 'layout',
     id: wrapperId,
