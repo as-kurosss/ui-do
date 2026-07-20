@@ -127,7 +127,44 @@
 |---|---|
 | `npx tsc --noEmit` | ✅ 0 errors |
 | `npm run lint` | ✅ 0 errors (6 pre-existing shadcn warnings) |
-| `npm test` | ✅ 73/73 passed |
+| `npm test` | ✅ 103/103 passed |
+
+---
+
+## Сводка рефакторинга
+
+По результатам ревью кода проведены следующие исправления:
+
+### Детерминизм
+- Сортировка `Object.entries(colors)` по ключу в `generateCss` (оба цикла: `:root` и `@theme inline`)
+- Замена `Math.random()` на `nanoid(8)` в `generateId()` и `wrapNode`
+- ID больше не наследуются от родительских ID (устранён паттерн `nodeId + '_wrap'`)
+
+### Типизация и валидация
+- Убраны все `id: '' as never` из реестра компонентов
+- Добавлена фабрика `createNode()` с автоматическим присвоением nanoid всем потомкам
+- Добавлен `HEX_RE` и валидация в `hexToOklch` (throw на невалидный hex)
+- Добавлена функция `validateProjectSpec()` для проверки загружаемых JSON-спецификаций
+
+### Компоненты и вложенность
+- `Select` сделан составным (`isContainer: true`) с подкомпонентами SelectTrigger/Value/Content/Item
+- Расширены правила `canContain` для Select-семейства
+- Добавлен `CanvasErrorBoundary` для защиты канваса от ошибок рендера
+- Добавлен атрибут `data-bn-direction` для корректного определения направления layout в DnD
+
+### Инфраструктура
+- Добавлен Prettier с конфигурацией (репозиторий + template)
+- Отформатированы все 70+ файлов
+- Обновлён README.md (вместо дефолтного Vite-шаблона)
+- Добавлены CSS-переменные: `--card-foreground`, `--secondary`, `--popover`, `--chart-1..5`
+
+### Тесты (73 → 103)
+- 4 теста hexToOklch (валидация)
+- 10 тестов canContain (Select-семейство)
+- 5 тестов createNode (фабрика, ID, subtree уникальность)
+- 1 тест wrapNode ID independence
+- 3 теста generateCss (детерминизм, сортировка)
+- 9 тестов validateProjectSpec (граничные случаи, валидная спека)
 
 ---
 
@@ -195,4 +232,4 @@ ui-do/
 ## Итог
 
 **Все 8 майлстоунов AGENTS.md реализованы полностью.**\
-Проект проходит `tsc --noEmit`, `npm run lint` (0 errors) и `npm test` (73/73).
+Проект проходит `tsc --noEmit`, `npm run lint` (0 errors) и `npm test` (103/103).
