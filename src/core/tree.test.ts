@@ -9,8 +9,8 @@ import {
   createDefaultRoot,
   wrapNode,
   ungroupChildren,
-  createNode,
 } from './tree';
+import { createNode } from './create-node';
 
 function makeLayout(id: string, children: SpecNode[] = []): LayoutNode {
   return { kind: 'layout', id: id as never, display: 'flex', children };

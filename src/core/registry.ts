@@ -1,4 +1,5 @@
-import type { SpecNode, NodeId } from './ir';
+import type { SpecNode } from './ir';
+import type { NodeId } from './ir';
 
 // ── Types ──
 
@@ -243,17 +244,17 @@ export const REGISTRY: ComponentDef[] = [
       children: () => [
         {
           kind: 'component',
-          id: '' as NodeId,
+          id: '' as NodeId, /* placeholder, replaced by createNode() */
           component: 'SelectTrigger',
           children: [
-            { kind: 'component', id: '' as NodeId, component: 'SelectValue', children: [] },
+            { kind: 'component', id: '' as NodeId /* placeholder, replaced by createNode() */, component: 'SelectValue', children: [] },
           ],
         },
         {
           kind: 'component',
-          id: '' as NodeId,
+          id: '' as NodeId, /* placeholder, replaced by createNode() */
           component: 'SelectContent',
-          children: [{ kind: 'component', id: '' as NodeId, component: 'SelectItem' }],
+          children: [{ kind: 'component', id: '' as NodeId /* placeholder, replaced by createNode() */, component: 'SelectItem' }],
         },
       ],
     },
@@ -316,8 +317,8 @@ export const REGISTRY: ComponentDef[] = [
     isContainer: true,
     defaults: {
       children: () => [
-        { kind: 'component', id: '' as NodeId, component: 'CardHeader', children: [] },
-        { kind: 'component', id: '' as NodeId, component: 'CardContent', children: [] },
+        { kind: 'component', id: '' as NodeId /* placeholder, replaced by createNode() */, component: 'CardHeader', children: [] },
+        { kind: 'component', id: '' as NodeId /* placeholder, replaced by createNode() */, component: 'CardContent', children: [] },
       ],
     },
     inspector: [{ kind: 'spacing', label: 'Padding' }],
@@ -329,7 +330,7 @@ export const REGISTRY: ComponentDef[] = [
     isContainer: true,
     defaults: {
       children: () => [
-        { kind: 'component', id: '' as NodeId, component: 'CardTitle', children: [] },
+        { kind: 'component', id: '' as NodeId /* placeholder, replaced by createNode() */, component: 'CardTitle', children: [] },
       ],
     },
     inspector: [],
@@ -465,7 +466,7 @@ export const REGISTRY: ComponentDef[] = [
     namedExport: 'TabsList',
     isContainer: true,
     defaults: {
-      children: () => [{ kind: 'component', id: '' as NodeId, component: 'TabsTrigger' }],
+      children: () => [{ kind: 'component', id: '' as NodeId /* placeholder, replaced by createNode() */, component: 'TabsTrigger' }],
     },
     inspector: [],
   },

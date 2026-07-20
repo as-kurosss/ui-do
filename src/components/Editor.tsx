@@ -28,7 +28,7 @@ import { cn } from '@/lib/utils';
 import { useEditorStore } from '@/store/editor';
 import type { DragData } from '@/core/dnd-strategy';
 import { treeStrategy, computeDropHint } from '@/core/dnd-strategy';
-import { createNode } from '@/core/tree';
+import { createNode } from '@/core/create-node';
 import type { NodeId } from '@/core/ir';
 
 type ViewportWidth = 'full' | '375' | '768' | '1280';
