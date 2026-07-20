@@ -94,9 +94,12 @@ function createFreshProject(name: string): ProjectSpec {
         tokens: {
           colors: {
             background: '#ffffff', foreground: '#0a0a0a', card: '#ffffff',
+            cardForeground: '#0a0a0a',
             primary: '#171717', primaryForeground: '#fafafa',
+            secondary: '#f5f5f5', secondaryForeground: '#737373',
             muted: '#f5f5f5', mutedForeground: '#737373',
             accent: '#f5f5f5', accentForeground: '#171717',
+            popover: '#ffffff', popoverForeground: '#0a0a0a',
             destructive: '#dc2626', destructiveForeground: '#fafafa',
             border: '#e5e5e5', input: '#e5e5e5',
           },

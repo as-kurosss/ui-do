@@ -43,10 +43,12 @@ export type SpecNode = ComponentNode | LayoutNode | TextNode | CodeNode;
 
 export interface TokenSet {
   colors: Record<
-    | 'background' | 'foreground' | 'card'
+    | 'background' | 'foreground' | 'card' | 'cardForeground'
     | 'primary' | 'primaryForeground'
+    | 'secondary' | 'secondaryForeground'
     | 'muted' | 'mutedForeground'
     | 'accent' | 'accentForeground'
+    | 'popover' | 'popoverForeground'
     | 'destructive' | 'destructiveForeground'
     | 'border' | 'input',
     string                              // hex '#rrggbb'

@@ -262,6 +262,17 @@ function generateCss(spec: ScreenSpec): string {
     lines.push(`  --${kebab}: ${oklch(hex)};`)
   }
 
+  // Derived variables (shadcn/ui compatibility)
+  lines.push('  --card-foreground: var(--foreground);')
+  lines.push('  --popover: var(--background);')
+  lines.push('  --popover-foreground: var(--foreground);')
+  lines.push('  --secondary: var(--muted);')
+  lines.push('  --secondary-foreground: var(--muted-foreground);')
+  lines.push('  --chart-1: oklch(0.646 0.222 41.116);')
+  lines.push('  --chart-2: oklch(0.6 0.118 184.704);')
+  lines.push('  --chart-3: oklch(0.398 0.07 227.392);')
+  lines.push('  --chart-4: oklch(0.828 0.189 84.429);')
+  lines.push('  --chart-5: oklch(0.769 0.188 70.08);')
   lines.push('  --ring: var(--primary);')
   lines.push(`  --radius: ${radiusRem}rem;`)
   lines.push('}')
@@ -273,6 +284,17 @@ function generateCss(spec: ScreenSpec): string {
     lines.push(`  --color-${kebab}: var(--${kebab});`)
   }
 
+  // Derived color mappings
+  lines.push('  --color-card-foreground: var(--card-foreground);')
+  lines.push('  --color-popover: var(--popover);')
+  lines.push('  --color-popover-foreground: var(--popover-foreground);')
+  lines.push('  --color-secondary: var(--secondary);')
+  lines.push('  --color-secondary-foreground: var(--secondary-foreground);')
+  lines.push('  --color-chart-1: var(--chart-1);')
+  lines.push('  --color-chart-2: var(--chart-2);')
+  lines.push('  --color-chart-3: var(--chart-3);')
+  lines.push('  --color-chart-4: var(--chart-4);')
+  lines.push('  --color-chart-5: var(--chart-5);')
   lines.push('  --radius-sm: calc(var(--radius) - 4px);')
   lines.push('  --radius-md: calc(var(--radius) - 2px);')
   lines.push('  --radius-lg: var(--radius);')
