@@ -1,4 +1,4 @@
-import type { SpecNode } from './ir';
+import type { SpecNode, NodeId } from './ir';
 
 // ── Types ──
 
@@ -243,17 +243,17 @@ export const REGISTRY: ComponentDef[] = [
       children: () => [
         {
           kind: 'component',
-          id: '' as never,
+          id: '' as NodeId,
           component: 'SelectTrigger',
           children: [
-            { kind: 'component', id: '' as never, component: 'SelectValue', children: [] },
+            { kind: 'component', id: '' as NodeId, component: 'SelectValue', children: [] },
           ],
         },
         {
           kind: 'component',
-          id: '' as never,
+          id: '' as NodeId,
           component: 'SelectContent',
-          children: [{ kind: 'component', id: '' as never, component: 'SelectItem' }],
+          children: [{ kind: 'component', id: '' as NodeId, component: 'SelectItem' }],
         },
       ],
     },
@@ -316,8 +316,8 @@ export const REGISTRY: ComponentDef[] = [
     isContainer: true,
     defaults: {
       children: () => [
-        { kind: 'component', id: '' as never, component: 'CardHeader', children: [] },
-        { kind: 'component', id: '' as never, component: 'CardContent', children: [] },
+        { kind: 'component', id: '' as NodeId, component: 'CardHeader', children: [] },
+        { kind: 'component', id: '' as NodeId, component: 'CardContent', children: [] },
       ],
     },
     inspector: [{ kind: 'spacing', label: 'Padding' }],
@@ -329,7 +329,7 @@ export const REGISTRY: ComponentDef[] = [
     isContainer: true,
     defaults: {
       children: () => [
-        { kind: 'component', id: '' as never, component: 'CardTitle', children: [] },
+        { kind: 'component', id: '' as NodeId, component: 'CardTitle', children: [] },
       ],
     },
     inspector: [],
@@ -465,7 +465,7 @@ export const REGISTRY: ComponentDef[] = [
     namedExport: 'TabsList',
     isContainer: true,
     defaults: {
-      children: () => [{ kind: 'component', id: '' as never, component: 'TabsTrigger' }],
+      children: () => [{ kind: 'component', id: '' as NodeId, component: 'TabsTrigger' }],
     },
     inspector: [],
   },

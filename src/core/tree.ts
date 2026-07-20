@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import type { SpecNode, NodeId, LayoutNode } from './ir';
+import { getComponentDef } from './registry';
 
 /**
  * Иммутабельно обходит дерево, находит узел по id и применяет fn.
@@ -246,6 +247,39 @@ export function ungroupChildren(root: SpecNode, nodeId: NodeId): SpecNode | null
   }
 
   return result;
+}
+
+/**
+ * Создаёт узел компонента из реестра, присваивая real ID всем потомкам.
+ * Заменяет пустые ID-плейсхолдеры из defaults.children на настоящие nanoid.
+ */
+export function createNode(componentId: string): SpecNode {
+  const def = getComponentDef(componentId);
+  const id = `n${nanoid(8)}` as NodeId;
+
+  const rawChildren = def?.defaults.children?.();
+
+  function assignIds(node: SpecNode): SpecNode {
+    const newNode = { ...node, id: `n${nanoid(8)}` as NodeId };
+    if (newNode.kind === 'component' && newNode.children) {
+      return { ...newNode, children: newNode.children.map(assignIds) };
+    }
+    if (newNode.kind === 'layout' && newNode.children.length > 0) {
+      return { ...newNode, children: newNode.children.map(assignIds) };
+    }
+    return newNode;
+  }
+
+  const node: SpecNode = {
+    kind: 'component' as const,
+    id,
+    component: componentId,
+    variants: def?.defaults.variants,
+    props: def?.defaults.props as Record<string, string | number | boolean> | undefined,
+    children: rawChildren ? rawChildren.map(assignIds) : undefined,
+  };
+
+  return node;
 }
 
 /**

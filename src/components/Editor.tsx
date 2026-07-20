@@ -27,28 +27,10 @@ import { cn } from '@/lib/utils';
 import { useEditorStore } from '@/store/editor';
 import type { DragData } from '@/core/dnd-strategy';
 import { treeStrategy, computeDropHint } from '@/core/dnd-strategy';
-import { getComponentDef } from '@/core/registry';
-import type { NodeId, SpecNode } from '@/core/ir';
+import { createNode } from '@/core/tree';
+import type { NodeId } from '@/core/ir';
 
 type ViewportWidth = 'full' | '375' | '768' | '1280';
-
-function generateId(): NodeId {
-  return `n${Math.random().toString(36).slice(2, 10)}` as NodeId;
-}
-
-function createNodeFromPalette(componentId: string): SpecNode {
-  const def = getComponentDef(componentId);
-  const id = generateId();
-  const node: SpecNode = {
-    kind: 'component',
-    id,
-    component: componentId,
-    variants: def?.defaults.variants,
-    props: def?.defaults.props as Record<string, string | number | boolean> | undefined,
-    children: def?.defaults.children?.() as SpecNode[] | undefined,
-  };
-  return node;
-}
 
 export function Editor() {
   const [previewWidth, setPreviewWidth] = useState<ViewportWidth>('full');
@@ -110,7 +92,7 @@ export function Editor() {
         if (dropHint) {
           const data = active.data.current as DragData | undefined;
           if (data?.type === 'palette') {
-            const node = createNodeFromPalette(data.componentId);
+            const node = createNode(data.componentId);
             insertNode(dropHint.parentId as NodeId, dropHint.index, node);
           } else if (data?.type === 'move') {
             moveNode(data.nodeId as NodeId, dropHint.parentId as NodeId, dropHint.index);
