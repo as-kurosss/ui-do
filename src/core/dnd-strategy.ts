@@ -100,16 +100,15 @@ export function computeDropHint(
   const containerRect = el.getBoundingClientRect();
   const children = Array.from(el.children).filter((child) => child.getAttribute('data-bn-id'));
 
-  // Определяем направление: flex-row vs flex-column (дефолт — column)
-  const style = getComputedStyle(el);
-  const isRow =
-    style.display === 'flex' &&
-    (style.flexDirection === 'row' || style.flexDirection === 'row-reverse');
+  // Определяем направление: читаем data-bn-direction (дефолт — column)
+  const dir = el.getAttribute('data-bn-direction') || 'column';
+  const isRow = dir === 'row';
   // Если нет детей — вставляем внутрь
   if (children.length === 0) {
     // Определяем, находится ли указатель в padding-зоне контейнера
-    const padTop = parseInt(style.paddingTop) || 0;
-    const padLeft = parseInt(style.paddingLeft) || 0;
+    const cs = getComputedStyle(el);
+    const padTop = parseInt(cs.paddingTop) || 0;
+    const padLeft = parseInt(cs.paddingLeft) || 0;
     const insideX = pointerX >= containerRect.left + padLeft && pointerX <= containerRect.right;
     const insideY = pointerY >= containerRect.top + padTop && pointerY <= containerRect.bottom;
     if (insideX && insideY) {

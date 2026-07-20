@@ -11,6 +11,7 @@ import { snapCenterToCursor } from '@dnd-kit/modifiers';
 import type { DragEndEvent, DragStartEvent, DragOverEvent } from '@dnd-kit/core';
 import { Palette } from './Palette';
 import { Canvas } from './Canvas';
+import { CanvasErrorBoundary } from './CanvasErrorBoundary';
 import { Inspector } from './Inspector';
 import { LayersPanel } from './LayersPanel';
 import { ContextMenu } from './ContextMenu';
@@ -173,7 +174,9 @@ export function Editor() {
                 <Canvas onContextMenu={handleContextMenu} />
               </PreviewCanvas>
             ) : (
-              <Canvas onContextMenu={handleContextMenu} />
+              <CanvasErrorBoundary>
+                <Canvas onContextMenu={handleContextMenu} />
+              </CanvasErrorBoundary>
             )}
           </main>
 

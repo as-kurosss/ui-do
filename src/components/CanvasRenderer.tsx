@@ -96,6 +96,7 @@ function LayoutNodeContent({
     <div
       ref={droppableRef}
       data-bn-id={node.id}
+      data-bn-direction={node.direction ?? 'column'}
       className={className}
       onClick={(e) => {
         e.stopPropagation();

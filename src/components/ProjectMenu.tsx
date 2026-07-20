@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useEditorStore } from '@/store/editor';
+import { validateProjectSpec } from '@/core/validate';
 
 export function ProjectMenu() {
   const { project, newProject, importProject, setProjectName } = useEditorStore();
@@ -24,10 +25,11 @@ export function ProjectMenu() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(reader.result as string);
-        if (parsed && typeof parsed === 'object' && 'version' in parsed && 'screens' in parsed) {
+        const result = validateProjectSpec(parsed);
+        if (result.valid) {
           importProject(parsed);
         } else {
-          alert('Invalid project file');
+          alert('Invalid project file:\n' + result.errors.join('\n'));
         }
       } catch {
         alert('Invalid JSON file');
