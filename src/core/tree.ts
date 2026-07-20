@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import type { SpecNode, NodeId, LayoutNode } from './ir'
 
 /**
@@ -183,7 +184,7 @@ export function wrapNode(root: SpecNode, nodeId: NodeId): SpecNode | null {
   const node = findNode(root, nodeId)
   if (!node) return null
 
-  const wrapperId = nodeId + '_wrap' as NodeId
+  const wrapperId = `n${nanoid(8)}` as NodeId
   const wrapper: LayoutNode = {
     kind: 'layout',
     id: wrapperId,
