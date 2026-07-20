@@ -1,16 +1,24 @@
-import { useDraggable } from '@dnd-kit/core'
-import type { PaletteDragData } from '@/core/dnd-strategy'
-import { REGISTRY } from '@/core/registry'
+import { useDraggable } from '@dnd-kit/core';
+import type { PaletteDragData } from '@/core/dnd-strategy';
+import { REGISTRY } from '@/core/registry';
 
 // Группировка компонентов по категориям
 const CATEGORIES: Record<string, string[]> = {
   Form: ['Input', 'Textarea', 'Label', 'Checkbox', 'Switch', 'Select'],
   Buttons: ['Button'],
-  Layout: ['Card', 'CardHeader', 'CardTitle', 'CardDescription', 'CardContent', 'CardFooter', 'Separator'],
+  Layout: [
+    'Card',
+    'CardHeader',
+    'CardTitle',
+    'CardDescription',
+    'CardContent',
+    'CardFooter',
+    'Separator',
+  ],
   Feedback: ['Badge', 'Alert', 'Progress'],
   Navigation: ['Tabs', 'TabsList', 'TabsTrigger', 'TabsContent'],
   Media: ['Avatar'],
-}
+};
 
 export function Palette() {
   return (
@@ -25,22 +33,22 @@ export function Palette() {
           </h3>
           <div className="flex flex-wrap gap-1">
             {ids.map((id) => {
-              const def = REGISTRY.find((d) => d.id === id)
-              if (!def) return null
-              return <PaletteItem key={id} componentId={id} label={def.namedExport} />
+              const def = REGISTRY.find((d) => d.id === id);
+              if (!def) return null;
+              return <PaletteItem key={id} componentId={id} label={def.namedExport} />;
             })}
           </div>
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 function PaletteItem({ componentId, label }: { componentId: string; label: string }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `palette:${componentId}`,
     data: { type: 'palette', componentId } satisfies PaletteDragData,
-  })
+  });
 
   return (
     <button
@@ -56,5 +64,5 @@ function PaletteItem({ componentId, label }: { componentId: string; label: strin
       <span className="text-blue-500">◈</span>
       {label}
     </button>
-  )
+  );
 }

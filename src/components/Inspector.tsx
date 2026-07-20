@@ -1,24 +1,23 @@
-import { useEditorStore } from '@/store/editor'
-import { getComponentDef } from '@/core/registry'
-import { findNode } from '@/core/tree'
-import type { InspectorField } from '@/core/registry'
-import type { NodeId, SpecNode, ComponentNode, LayoutNode, TextNode } from '@/core/ir'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+import { useEditorStore } from '@/store/editor';
+import { getComponentDef } from '@/core/registry';
+import { findNode } from '@/core/tree';
+import type { InspectorField } from '@/core/registry';
+import type { NodeId, SpecNode, ComponentNode, LayoutNode, TextNode } from '@/core/ir';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 export function Inspector() {
-  const { project, activeScreenId, selectedId, patchNode } = useEditorStore()
-  const screen = project.screens.find((s) => s.id === activeScreenId)
-    ?? project.screens[0]
+  const { project, activeScreenId, selectedId, patchNode } = useEditorStore();
+  const screen = project.screens.find((s) => s.id === activeScreenId) ?? project.screens[0];
 
   if (!selectedId || !screen) {
-    return <InspectorEmpty />
+    return <InspectorEmpty />;
   }
 
-  const node = findNode(screen.root, selectedId)
+  const node = findNode(screen.root, selectedId);
   if (!node) {
-    return <InspectorEmpty />
+    return <InspectorEmpty />;
   }
 
   return (
@@ -41,7 +40,7 @@ export function Inspector() {
         </Section>
       )}
     </div>
-  )
+  );
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -52,7 +51,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       </h3>
       {children}
     </div>
-  )
+  );
 }
 
 function InspectorEmpty() {
@@ -63,23 +62,26 @@ function InspectorEmpty() {
       </h2>
       <p className="text-sm text-muted-foreground">Select a node to inspect</p>
     </div>
-  )
+  );
 }
 
 // ── Node Header ──
 
 function NodeHeader({ node }: { node: SpecNode }) {
-  const kindLabel = node.kind === 'component'
-    ? (node as ComponentNode).component
-    : node.kind === 'layout' ? 'Layout'
-    : node.kind === 'text' ? 'Text'
-    : 'Code'
+  const kindLabel =
+    node.kind === 'component'
+      ? (node as ComponentNode).component
+      : node.kind === 'layout'
+        ? 'Layout'
+        : node.kind === 'text'
+          ? 'Text'
+          : 'Code';
   const colorMap = {
     component: 'text-blue-600',
     layout: 'text-purple-600',
     text: 'text-green-600',
     code: 'text-orange-600',
-  } as const
+  } as const;
 
   return (
     <div className="flex flex-col gap-1">
@@ -90,7 +92,7 @@ function NodeHeader({ node }: { node: SpecNode }) {
         {kindLabel} <span className="text-muted-foreground">#{node.id}</span>
       </div>
     </div>
-  )
+  );
 }
 
 // ── Component Inspector ──
@@ -99,17 +101,17 @@ function ComponentInspector({
   node,
   onPatch,
 }: {
-  node: ComponentNode
-  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void
+  node: ComponentNode;
+  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void;
 }) {
-  const def = getComponentDef(node.component)
+  const def = getComponentDef(node.component);
 
   if (!def) {
-    return <p className="text-xs text-muted-foreground">Unknown component: {node.component}</p>
+    return <p className="text-xs text-muted-foreground">Unknown component: {node.component}</p>;
   }
 
   if (def.inspector.length === 0) {
-    return <p className="text-xs text-muted-foreground">No configurable properties</p>
+    return <p className="text-xs text-muted-foreground">No configurable properties</p>;
   }
 
   return (
@@ -120,7 +122,7 @@ function ComponentInspector({
         ))}
       </Section>
     </div>
-  )
+  );
 }
 
 function InspectorFieldRow({
@@ -128,21 +130,21 @@ function InspectorFieldRow({
   node,
   onPatch,
 }: {
-  field: InspectorField
-  node: ComponentNode
-  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void
+  field: InspectorField;
+  node: ComponentNode;
+  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void;
 }) {
   switch (field.kind) {
     case 'select':
-      return <SelectField field={field} node={node} onPatch={onPatch} />
+      return <SelectField field={field} node={node} onPatch={onPatch} />;
     case 'text':
-      return <TextField field={field} node={node} onPatch={onPatch} />
+      return <TextField field={field} node={node} onPatch={onPatch} />;
     case 'toggle':
-      return <ToggleField field={field} node={node} onPatch={onPatch} />
+      return <ToggleField field={field} node={node} onPatch={onPatch} />;
     case 'spacing':
-      return <SpacingField field={field} node={node} onPatch={onPatch} />
+      return <SpacingField field={field} node={node} onPatch={onPatch} />;
     default:
-      return null
+      return null;
   }
 }
 
@@ -151,13 +153,12 @@ function SelectField({
   node,
   onPatch,
 }: {
-  field: InspectorField & { kind: 'select' }
-  node: ComponentNode
-  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void
+  field: InspectorField & { kind: 'select' };
+  node: ComponentNode;
+  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void;
 }) {
-  const current = field.target === 'variant'
-    ? node.variants?.[field.prop]
-    : node.props?.[field.prop]
+  const current =
+    field.target === 'variant' ? node.variants?.[field.prop] : node.props?.[field.prop];
 
   return (
     <div className="flex flex-col gap-1">
@@ -169,20 +170,22 @@ function SelectField({
           if (field.target === 'variant') {
             onPatch(node.id, {
               variants: { ...node.variants, [field.prop]: e.target.value },
-            } as any)
+            } as any);
           } else {
             onPatch(node.id, {
               props: { ...node.props, [field.prop]: e.target.value },
-            } as any)
+            } as any);
           }
         }}
       >
         {field.options.map((opt) => (
-          <option key={opt} value={opt}>{opt}</option>
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
         ))}
       </select>
     </div>
-  )
+  );
 }
 
 function TextField({
@@ -190,35 +193,35 @@ function TextField({
   node,
   onPatch,
 }: {
-  field: InspectorField & { kind: 'text' }
-  node: ComponentNode
-  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void
+  field: InspectorField & { kind: 'text' };
+  node: ComponentNode;
+  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void;
 }) {
-  const current = field.target === 'prop'
-    ? node.props?.[field.prop]
-    : (node as any).text
+  const current = field.target === 'prop' ? node.props?.[field.prop] : (node as any).text;
 
   // Smart type detection based on prop name
-  const propNameLower = field.prop.toLowerCase()
-  const isNumeric = ['value', 'min', 'max', 'step', 'count', 'size'].some((k) => propNameLower.includes(k))
-  const isColor = ['color', 'bg', 'background'].some((k) => propNameLower.includes(k))
+  const propNameLower = field.prop.toLowerCase();
+  const isNumeric = ['value', 'min', 'max', 'step', 'count', 'size'].some((k) =>
+    propNameLower.includes(k),
+  );
+  const isColor = ['color', 'bg', 'background'].some((k) => propNameLower.includes(k));
 
   function handleChange(value: string) {
     if (field.target === 'text') {
-      onPatch(node.id, { text: value } as any)
+      onPatch(node.id, { text: value } as any);
     } else if (isNumeric) {
       onPatch(node.id, {
         props: { ...node.props, [field.prop]: Number(value) },
-      } as any)
+      } as any);
     } else {
       onPatch(node.id, {
         props: { ...node.props, [field.prop]: value },
-      } as any)
+      } as any);
     }
   }
 
   if (isColor) {
-    const hexValue = (current as string | undefined) ?? '#000000'
+    const hexValue = (current as string | undefined) ?? '#000000';
     return (
       <div className="flex flex-col gap-1">
         <Label className="text-xs">{field.label}</Label>
@@ -236,7 +239,7 @@ function TextField({
           />
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -249,7 +252,7 @@ function TextField({
         onChange={(e) => handleChange(e.target.value)}
       />
     </div>
-  )
+  );
 }
 
 function ToggleField({
@@ -257,11 +260,11 @@ function ToggleField({
   node,
   onPatch,
 }: {
-  field: InspectorField & { kind: 'toggle' }
-  node: ComponentNode
-  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void
+  field: InspectorField & { kind: 'toggle' };
+  node: ComponentNode;
+  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void;
 }) {
-  const checked = node.props?.[field.prop] === true
+  const checked = node.props?.[field.prop] === true;
 
   return (
     <div className="flex items-center justify-between">
@@ -275,7 +278,7 @@ function ToggleField({
         onClick={() => {
           onPatch(node.id, {
             props: { ...node.props, [field.prop]: !checked },
-          } as any)
+          } as any);
         }}
       >
         <span
@@ -285,7 +288,7 @@ function ToggleField({
         />
       </button>
     </div>
-  )
+  );
 }
 
 function SpacingField({
@@ -293,9 +296,9 @@ function SpacingField({
   node,
   onPatch,
 }: {
-  field: InspectorField & { kind: 'spacing' }
-  node: ComponentNode
-  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void
+  field: InspectorField & { kind: 'spacing' };
+  node: ComponentNode;
+  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void;
 }) {
   return (
     <div className="flex flex-col gap-1">
@@ -304,7 +307,7 @@ function SpacingField({
         className="flex h-8 w-full rounded-md border border-input bg-background px-2 py-1 text-xs"
         value={node.className ?? ''}
         onChange={(e) => {
-          onPatch(node.id, { className: e.target.value } as any)
+          onPatch(node.id, { className: e.target.value } as any);
         }}
       >
         <option value="">Default</option>
@@ -317,7 +320,7 @@ function SpacingField({
         <option value="px-6 py-4">px-6 py-4</option>
       </select>
     </div>
-  )
+  );
 }
 
 // ── Layout Inspector ──
@@ -326,8 +329,8 @@ function LayoutInspector({
   node,
   onPatch,
 }: {
-  node: LayoutNode
-  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void
+  node: LayoutNode;
+  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void;
 }) {
   return (
     <div className="flex flex-col gap-3">
@@ -339,7 +342,9 @@ function LayoutInspector({
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-muted text-muted-foreground hover:text-foreground'
             }`}
-            onClick={() => onPatch(node.id, { display: 'flex', direction: node.direction ?? 'column' } as any)}
+            onClick={() =>
+              onPatch(node.id, { display: 'flex', direction: node.direction ?? 'column' } as any)
+            }
           >
             Flex
           </button>
@@ -422,7 +427,7 @@ function LayoutInspector({
         </div>
       </Section>
     </div>
-  )
+  );
 }
 
 // ── Text Inspector ──
@@ -431,8 +436,8 @@ function TextInspector({
   node,
   onPatch,
 }: {
-  node: TextNode
-  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void
+  node: TextNode;
+  onPatch: (id: NodeId, patch: Partial<SpecNode>) => void;
 }) {
   return (
     <div className="flex flex-col gap-3">
@@ -457,5 +462,5 @@ function TextInspector({
         </select>
       </Section>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -6,39 +6,39 @@ import {
   useSensors,
   PointerSensor,
   KeyboardSensor,
-} from '@dnd-kit/core'
-import { snapCenterToCursor } from '@dnd-kit/modifiers'
-import type { DragEndEvent, DragStartEvent, DragOverEvent } from '@dnd-kit/core'
-import { Palette } from './Palette'
-import { Canvas } from './Canvas'
-import { Inspector } from './Inspector'
-import { LayersPanel } from './LayersPanel'
-import { ContextMenu } from './ContextMenu'
-import { DragOverlayContent } from './DragOverlayContent'
-import { DropIndicators } from './DropIndicators'
-import { UndoRedo } from './UndoRedo'
-import { ScreenTabs } from './ScreenTabs'
-import { ProjectMenu } from './ProjectMenu'
-import { ExportDialog } from './ExportDialog'
-import { TokensPanel } from './TokensPanel'
-import { TokenInjector } from './TokenInjector'
-import { useKeyboard } from '@/hooks/useKeyboard'
-import { cn } from '@/lib/utils'
-import { useEditorStore } from '@/store/editor'
-import type { DragData } from '@/core/dnd-strategy'
-import { treeStrategy, computeDropHint } from '@/core/dnd-strategy'
-import { getComponentDef } from '@/core/registry'
-import type { NodeId, SpecNode } from '@/core/ir'
+} from '@dnd-kit/core';
+import { snapCenterToCursor } from '@dnd-kit/modifiers';
+import type { DragEndEvent, DragStartEvent, DragOverEvent } from '@dnd-kit/core';
+import { Palette } from './Palette';
+import { Canvas } from './Canvas';
+import { Inspector } from './Inspector';
+import { LayersPanel } from './LayersPanel';
+import { ContextMenu } from './ContextMenu';
+import { DragOverlayContent } from './DragOverlayContent';
+import { DropIndicators } from './DropIndicators';
+import { UndoRedo } from './UndoRedo';
+import { ScreenTabs } from './ScreenTabs';
+import { ProjectMenu } from './ProjectMenu';
+import { ExportDialog } from './ExportDialog';
+import { TokensPanel } from './TokensPanel';
+import { TokenInjector } from './TokenInjector';
+import { useKeyboard } from '@/hooks/useKeyboard';
+import { cn } from '@/lib/utils';
+import { useEditorStore } from '@/store/editor';
+import type { DragData } from '@/core/dnd-strategy';
+import { treeStrategy, computeDropHint } from '@/core/dnd-strategy';
+import { getComponentDef } from '@/core/registry';
+import type { NodeId, SpecNode } from '@/core/ir';
 
-type ViewportWidth = 'full' | '375' | '768' | '1280'
+type ViewportWidth = 'full' | '375' | '768' | '1280';
 
 function generateId(): NodeId {
-  return `n${Math.random().toString(36).slice(2, 10)}` as NodeId
+  return `n${Math.random().toString(36).slice(2, 10)}` as NodeId;
 }
 
 function createNodeFromPalette(componentId: string): SpecNode {
-  const def = getComponentDef(componentId)
-  const id = generateId()
+  const def = getComponentDef(componentId);
+  const id = generateId();
   const node: SpecNode = {
     kind: 'component',
     id,
@@ -46,86 +46,88 @@ function createNodeFromPalette(componentId: string): SpecNode {
     variants: def?.defaults.variants,
     props: def?.defaults.props as Record<string, string | number | boolean> | undefined,
     children: def?.defaults.children?.() as SpecNode[] | undefined,
-  }
-  return node
+  };
+  return node;
 }
 
 export function Editor() {
-  const [previewWidth, setPreviewWidth] = useState<ViewportWidth>('full')
-  const [activeDrag, setActiveDrag] = useState<DragData | null>(null)
-  const [showExport, setShowExport] = useState(false)
-  const [rightTab, setRightTab] = useState<'properties' | 'theme'>('properties')
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId: NodeId } | null>(null)
+  const [previewWidth, setPreviewWidth] = useState<ViewportWidth>('full');
+  const [activeDrag, setActiveDrag] = useState<DragData | null>(null);
+  const [showExport, setShowExport] = useState(false);
+  const [rightTab, setRightTab] = useState<'properties' | 'theme'>('properties');
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId: NodeId } | null>(
+    null,
+  );
 
-  useKeyboard()
+  useKeyboard();
 
-  const insertNode = useEditorStore((s) => s.insertNode)
-  const moveNode = useEditorStore((s) => s.moveNode)
-  const setDropHint = useEditorStore((s) => s.setDropHint)
+  const insertNode = useEditorStore((s) => s.insertNode);
+  const moveNode = useEditorStore((s) => s.moveNode);
+  const setDropHint = useEditorStore((s) => s.setDropHint);
 
   const handleContextMenu = (nodeId: NodeId, e: React.MouseEvent) => {
-    setContextMenu({ x: e.clientX, y: e.clientY, nodeId })
-  }
+    setContextMenu({ x: e.clientX, y: e.clientY, nodeId });
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 6 },
     }),
     useSensor(KeyboardSensor),
-  )
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
-    const data = event.active.data.current as DragData | undefined
-    if (data) setActiveDrag(data)
-  }
+    const data = event.active.data.current as DragData | undefined;
+    if (data) setActiveDrag(data);
+  };
 
   const handleDragOver = (event: DragOverEvent) => {
-    const { over, activatorEvent } = event
+    const { over, activatorEvent } = event;
     if (over) {
-      const overId = String(over.id)
+      const overId = String(over.id);
       if (overId.startsWith('node:')) {
-        const parentId = overId.slice(5)
+        const parentId = overId.slice(5);
         if (activatorEvent && 'clientX' in activatorEvent) {
           const hint = computeDropHint(
             parentId,
             (activatorEvent as MouseEvent).clientX,
             (activatorEvent as MouseEvent).clientY,
-          )
-          setDropHint(hint)
-          return
+          );
+          setDropHint(hint);
+          return;
         }
       }
     }
-    setDropHint(null)
-  }
+    setDropHint(null);
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
+    const { active, over } = event;
     if (over) {
-      const overId = String(over.id)
+      const overId = String(over.id);
       if (overId.startsWith('node:')) {
-        const dropHint = useEditorStore.getState().dropHint
+        const dropHint = useEditorStore.getState().dropHint;
         if (dropHint) {
-          const data = active.data.current as DragData | undefined
+          const data = active.data.current as DragData | undefined;
           if (data?.type === 'palette') {
-            const node = createNodeFromPalette(data.componentId)
-            insertNode(dropHint.parentId as NodeId, dropHint.index, node)
+            const node = createNodeFromPalette(data.componentId);
+            insertNode(dropHint.parentId as NodeId, dropHint.index, node);
           } else if (data?.type === 'move') {
-            moveNode(data.nodeId as NodeId, dropHint.parentId as NodeId, dropHint.index)
+            moveNode(data.nodeId as NodeId, dropHint.parentId as NodeId, dropHint.index);
           }
         }
       }
     }
-    setActiveDrag(null)
-    setDropHint(null)
-  }
+    setActiveDrag(null);
+    setDropHint(null);
+  };
 
   const handleDragCancel = () => {
-    setActiveDrag(null)
-    setDropHint(null)
-  }
+    setActiveDrag(null);
+    setDropHint(null);
+  };
 
-  const isPreview = previewWidth !== 'full'
+  const isPreview = previewWidth !== 'full';
 
   return (
     <DndContext
@@ -254,26 +256,29 @@ export function Editor() {
       {/* Token CSS injection */}
       <TokenInjector />
     </DndContext>
-  )
+  );
 }
 
-function PreviewCanvas({
-  width,
-  children,
-}: {
-  width: ViewportWidth
-  children: React.ReactNode
-}) {
+function PreviewCanvas({ width, children }: { width: ViewportWidth; children: React.ReactNode }) {
   const maxW =
-    width === '375' ? 'max-w-[375px]' :
-    width === '768' ? 'max-w-[768px]' :
-    width === '1280' ? 'max-w-[1280px]' : ''
+    width === '375'
+      ? 'max-w-[375px]'
+      : width === '768'
+        ? 'max-w-[768px]'
+        : width === '1280'
+          ? 'max-w-[1280px]'
+          : '';
 
   return (
     <div className="flex flex-1 items-start justify-center overflow-auto bg-muted/50 p-4">
-      <div className={cn('w-full min-h-full rounded-lg border border-border bg-background shadow-sm', maxW)}>
+      <div
+        className={cn(
+          'w-full min-h-full rounded-lg border border-border bg-background shadow-sm',
+          maxW,
+        )}
+      >
         {children}
       </div>
     </div>
-  )
+  );
 }

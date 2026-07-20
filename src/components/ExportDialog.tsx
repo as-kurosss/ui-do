@@ -1,37 +1,34 @@
-import { useState } from 'react'
-import { useEditorStore } from '@/store/editor'
-import { generateScreen } from '@/codegen/generate'
-import { cn } from '@/lib/utils'
+import { useState } from 'react';
+import { useEditorStore } from '@/store/editor';
+import { generateScreen } from '@/codegen/generate';
+import { cn } from '@/lib/utils';
 
 interface ExportDialogProps {
-  open: boolean
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
 }
 
 export function ExportDialog({ open, onClose }: ExportDialogProps) {
-  const { project, activeScreenId } = useEditorStore()
-  const screen = project.screens.find((s) => s.id === activeScreenId)
-    ?? project.screens[0]
-  const [copied, setCopied] = useState(false)
+  const { project, activeScreenId } = useEditorStore();
+  const screen = project.screens.find((s) => s.id === activeScreenId) ?? project.screens[0];
+  const [copied, setCopied] = useState(false);
 
-  if (!open) return null
+  if (!open) return null;
 
-  const { tsx: code } = screen ? generateScreen(screen) : { tsx: '' }
+  const { tsx: code } = screen ? generateScreen(screen) : { tsx: '' };
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(code)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    await navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="flex w-[700px] max-h-[80vh] flex-col rounded-lg border border-border bg-background shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-4 py-2">
-          <h2 className="text-sm font-semibold">
-            Export — {screen?.name ?? 'Screen'}
-          </h2>
+          <h2 className="text-sm font-semibold">Export — {screen?.name ?? 'Screen'}</h2>
           <button
             className="rounded px-2 py-0.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             onClick={onClose}
@@ -69,5 +66,5 @@ export function ExportDialog({ open, onClose }: ExportDialogProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

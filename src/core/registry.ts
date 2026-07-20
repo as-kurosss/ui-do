@@ -1,11 +1,11 @@
-import type { SpecNode } from './ir'
+import type { SpecNode } from './ir';
 
 // ── Types ──
 
 export interface ComponentDef {
-  id: string;                           // 'Button'
-  module: string;                       // '@/components/ui/button'
-  namedExport: string;                  // 'Button'
+  id: string; // 'Button'
+  module: string; // '@/components/ui/button'
+  namedExport: string; // 'Button'
   isContainer: boolean;
   defaults: {
     variants?: Record<string, string>;
@@ -14,7 +14,7 @@ export interface ComponentDef {
     children?: () => SpecNode[];
   };
   inspector: InspectorField[];
-  events?: string[];                    // ['onClick'] — разрешённые события
+  events?: string[]; // ['onClick'] — разрешённые события
 }
 
 export type InspectorField =
@@ -25,7 +25,7 @@ export type InspectorField =
 
 // ── Family tags for nesting rules ──
 
-type Family = 'card' | 'card-header' | 'tabs' | 'leaf' | 'container' | 'select' | 'select-content'
+type Family = 'card' | 'card-header' | 'tabs' | 'leaf' | 'container' | 'select' | 'select-content';
 
 const componentFamily: Record<string, Family> = {
   Button: 'leaf',
@@ -54,52 +54,52 @@ const componentFamily: Record<string, Family> = {
   TabsList: 'card-header', // shares card-header-like restrictions
   TabsTrigger: 'leaf',
   TabsContent: 'container',
-}
+};
 
-const LEAF_FAMILIES: Family[] = ['leaf']
-const CARD_FAMILY: Family[] = ['card', 'card-header']
-const TABS_FAMILY: Family[] = ['tabs']
+const LEAF_FAMILIES: Family[] = ['leaf'];
+const CARD_FAMILY: Family[] = ['card', 'card-header'];
+const TABS_FAMILY: Family[] = ['tabs'];
 
 /** Проверяет, может ли parent принять child в качестве потомка. */
 export function canContain(parentId: string, childId: string | null): boolean {
-  if (childId === null) return true // новый компонент без детей — всегда ок
+  if (childId === null) return true; // новый компонент без детей — всегда ок
 
-  const pf = componentFamily[parentId] ?? 'container'
-  const cf = componentFamily[childId] ?? 'container'
+  const pf = componentFamily[parentId] ?? 'container';
+  const cf = componentFamily[childId] ?? 'container';
 
   // Специфические правила для конкретных parent-компонентов
 
   // TabsList → только TabsTrigger (до семейных правил, т.к. TabsList = family card-header)
-  if (parentId === 'TabsList') return childId === 'TabsTrigger'
+  if (parentId === 'TabsList') return childId === 'TabsTrigger';
 
   // Select → только SelectTrigger | SelectValue | SelectContent
-  if (pf === 'select') return ['SelectTrigger', 'SelectValue', 'SelectContent'].includes(childId)
+  if (pf === 'select') return ['SelectTrigger', 'SelectValue', 'SelectContent'].includes(childId);
 
   // SelectContent → принимает всё, кроме карточной и таб-семей
   if (pf === 'select-content') {
-    return !CARD_FAMILY.includes(cf) && !TABS_FAMILY.includes(cf)
+    return !CARD_FAMILY.includes(cf) && !TABS_FAMILY.includes(cf);
   }
 
   // Card → только CardHeader | CardContent | CardFooter
-  if (pf === 'card') return cf === 'card-header' || cf === 'container'
+  if (pf === 'card') return cf === 'card-header' || cf === 'container';
 
   // CardHeader → только CardTitle | CardDescription
   if (pf === 'card-header') {
-    return ['CardTitle', 'CardDescription'].includes(childId)
+    return ['CardTitle', 'CardDescription'].includes(childId);
   }
 
   // Tabs → только TabsList | TabsContent
   if (pf === 'tabs') {
-    return ['TabsList', 'TabsContent'].includes(childId)
+    return ['TabsList', 'TabsContent'].includes(childId);
   }
 
   // Leaf-компоненты не принимают детей
-  if (LEAF_FAMILIES.includes(pf)) return false
+  if (LEAF_FAMILIES.includes(pf)) return false;
 
   // Card-, Tabs- и Select-семейства не могут быть помещены в произвольные контейнеры
-  if (CARD_FAMILY.includes(cf) || TABS_FAMILY.includes(cf) || cf === 'select') return false
+  if (CARD_FAMILY.includes(cf) || TABS_FAMILY.includes(cf) || cf === 'select') return false;
 
-  return true
+  return true;
 }
 
 // ── Registry ──
@@ -115,15 +115,24 @@ export const REGISTRY: ComponentDef[] = [
     },
     inspector: [
       {
-        kind: 'select', target: 'variant', prop: 'variant',
-        label: 'Variant', options: ['default', 'outline', 'secondary', 'ghost', 'destructive', 'link'],
+        kind: 'select',
+        target: 'variant',
+        prop: 'variant',
+        label: 'Variant',
+        options: ['default', 'outline', 'secondary', 'ghost', 'destructive', 'link'],
       },
       {
-        kind: 'select', target: 'variant', prop: 'size',
-        label: 'Size', options: ['default', 'xs', 'sm', 'lg', 'icon', 'icon-xs', 'icon-sm', 'icon-lg'],
+        kind: 'select',
+        target: 'variant',
+        prop: 'size',
+        label: 'Size',
+        options: ['default', 'xs', 'sm', 'lg', 'icon', 'icon-xs', 'icon-sm', 'icon-lg'],
       },
       {
-        kind: 'toggle', target: 'prop', prop: 'disabled', label: 'Disabled',
+        kind: 'toggle',
+        target: 'prop',
+        prop: 'disabled',
+        label: 'Disabled',
       },
     ],
     events: ['onClick'],
@@ -136,10 +145,16 @@ export const REGISTRY: ComponentDef[] = [
     defaults: {},
     inspector: [
       {
-        kind: 'text', target: 'prop', prop: 'placeholder', label: 'Placeholder',
+        kind: 'text',
+        target: 'prop',
+        prop: 'placeholder',
+        label: 'Placeholder',
       },
       {
-        kind: 'toggle', target: 'prop', prop: 'disabled', label: 'Disabled',
+        kind: 'toggle',
+        target: 'prop',
+        prop: 'disabled',
+        label: 'Disabled',
       },
     ],
     events: ['onChange', 'onFocus', 'onBlur'],
@@ -152,7 +167,10 @@ export const REGISTRY: ComponentDef[] = [
     defaults: {},
     inspector: [
       {
-        kind: 'text', target: 'prop', prop: 'children', label: 'Text',
+        kind: 'text',
+        target: 'prop',
+        prop: 'children',
+        label: 'Text',
       },
     ],
   },
@@ -164,10 +182,16 @@ export const REGISTRY: ComponentDef[] = [
     defaults: {},
     inspector: [
       {
-        kind: 'text', target: 'prop', prop: 'placeholder', label: 'Placeholder',
+        kind: 'text',
+        target: 'prop',
+        prop: 'placeholder',
+        label: 'Placeholder',
       },
       {
-        kind: 'toggle', target: 'prop', prop: 'disabled', label: 'Disabled',
+        kind: 'toggle',
+        target: 'prop',
+        prop: 'disabled',
+        label: 'Disabled',
       },
     ],
     events: ['onChange', 'onFocus', 'onBlur'],
@@ -180,10 +204,16 @@ export const REGISTRY: ComponentDef[] = [
     defaults: {},
     inspector: [
       {
-        kind: 'toggle', target: 'prop', prop: 'checked', label: 'Checked',
+        kind: 'toggle',
+        target: 'prop',
+        prop: 'checked',
+        label: 'Checked',
       },
       {
-        kind: 'toggle', target: 'prop', prop: 'disabled', label: 'Disabled',
+        kind: 'toggle',
+        target: 'prop',
+        prop: 'disabled',
+        label: 'Disabled',
       },
     ],
     events: ['onCheckedChange'],
@@ -196,7 +226,10 @@ export const REGISTRY: ComponentDef[] = [
     defaults: {},
     inspector: [
       {
-        kind: 'toggle', target: 'prop', prop: 'checked', label: 'Checked',
+        kind: 'toggle',
+        target: 'prop',
+        prop: 'checked',
+        label: 'Checked',
       },
     ],
     events: ['onCheckedChange'],
@@ -209,23 +242,28 @@ export const REGISTRY: ComponentDef[] = [
     defaults: {
       children: () => [
         {
-          kind: 'component', id: '' as never, component: 'SelectTrigger',
+          kind: 'component',
+          id: '' as never,
+          component: 'SelectTrigger',
           children: [
             { kind: 'component', id: '' as never, component: 'SelectValue', children: [] },
           ],
         },
         {
-          kind: 'component', id: '' as never, component: 'SelectContent',
-          children: [
-            { kind: 'component', id: '' as never, component: 'SelectItem' },
-          ],
+          kind: 'component',
+          id: '' as never,
+          component: 'SelectContent',
+          children: [{ kind: 'component', id: '' as never, component: 'SelectItem' }],
         },
       ],
     },
     inspector: [
       {
-        kind: 'select', target: 'prop', prop: 'placeholder',
-        label: 'Placeholder', options: ['Select an option'],
+        kind: 'select',
+        target: 'prop',
+        prop: 'placeholder',
+        label: 'Placeholder',
+        options: ['Select an option'],
       },
     ],
     events: ['onValueChange'],
@@ -264,7 +302,10 @@ export const REGISTRY: ComponentDef[] = [
     },
     inspector: [
       {
-        kind: 'text', target: 'prop', prop: 'value', label: 'Value',
+        kind: 'text',
+        target: 'prop',
+        prop: 'value',
+        label: 'Value',
       },
     ],
   },
@@ -279,9 +320,7 @@ export const REGISTRY: ComponentDef[] = [
         { kind: 'component', id: '' as never, component: 'CardContent', children: [] },
       ],
     },
-    inspector: [
-      { kind: 'spacing', label: 'Padding' },
-    ],
+    inspector: [{ kind: 'spacing', label: 'Padding' }],
   },
   {
     id: 'CardHeader',
@@ -303,7 +342,10 @@ export const REGISTRY: ComponentDef[] = [
     defaults: {},
     inspector: [
       {
-        kind: 'text', target: 'text', prop: 'text', label: 'Title',
+        kind: 'text',
+        target: 'text',
+        prop: 'text',
+        label: 'Title',
       },
     ],
   },
@@ -315,7 +357,10 @@ export const REGISTRY: ComponentDef[] = [
     defaults: {},
     inspector: [
       {
-        kind: 'text', target: 'text', prop: 'text', label: 'Description',
+        kind: 'text',
+        target: 'text',
+        prop: 'text',
+        label: 'Description',
       },
     ],
   },
@@ -325,9 +370,7 @@ export const REGISTRY: ComponentDef[] = [
     namedExport: 'CardContent',
     isContainer: true,
     defaults: {},
-    inspector: [
-      { kind: 'spacing', label: 'Padding' },
-    ],
+    inspector: [{ kind: 'spacing', label: 'Padding' }],
   },
   {
     id: 'CardFooter',
@@ -335,9 +378,7 @@ export const REGISTRY: ComponentDef[] = [
     namedExport: 'CardFooter',
     isContainer: true,
     defaults: {},
-    inspector: [
-      { kind: 'spacing', label: 'Padding' },
-    ],
+    inspector: [{ kind: 'spacing', label: 'Padding' }],
   },
   {
     id: 'Badge',
@@ -349,8 +390,11 @@ export const REGISTRY: ComponentDef[] = [
     },
     inspector: [
       {
-        kind: 'select', target: 'variant', prop: 'variant',
-        label: 'Variant', options: ['default', 'secondary', 'outline', 'destructive'],
+        kind: 'select',
+        target: 'variant',
+        prop: 'variant',
+        label: 'Variant',
+        options: ['default', 'secondary', 'outline', 'destructive'],
       },
     ],
   },
@@ -364,8 +408,11 @@ export const REGISTRY: ComponentDef[] = [
     },
     inspector: [
       {
-        kind: 'select', target: 'variant', prop: 'variant',
-        label: 'Variant', options: ['default', 'destructive'],
+        kind: 'select',
+        target: 'variant',
+        prop: 'variant',
+        label: 'Variant',
+        options: ['default', 'destructive'],
       },
     ],
   },
@@ -395,7 +442,10 @@ export const REGISTRY: ComponentDef[] = [
     },
     inspector: [
       {
-        kind: 'text', target: 'prop', prop: 'value', label: 'Value',
+        kind: 'text',
+        target: 'prop',
+        prop: 'value',
+        label: 'Value',
       },
     ],
   },
@@ -415,9 +465,7 @@ export const REGISTRY: ComponentDef[] = [
     namedExport: 'TabsList',
     isContainer: true,
     defaults: {
-      children: () => [
-        { kind: 'component', id: '' as never, component: 'TabsTrigger' },
-      ],
+      children: () => [{ kind: 'component', id: '' as never, component: 'TabsTrigger' }],
     },
     inspector: [],
   },
@@ -431,7 +479,10 @@ export const REGISTRY: ComponentDef[] = [
     },
     inspector: [
       {
-        kind: 'text', target: 'prop', prop: 'value', label: 'Value',
+        kind: 'text',
+        target: 'prop',
+        prop: 'value',
+        label: 'Value',
       },
     ],
   },
@@ -445,23 +496,26 @@ export const REGISTRY: ComponentDef[] = [
     },
     inspector: [
       {
-        kind: 'text', target: 'prop', prop: 'value', label: 'Value',
+        kind: 'text',
+        target: 'prop',
+        prop: 'value',
+        label: 'Value',
       },
     ],
   },
-]
+];
 
 /** Индекс компонентов по id */
 export const REGISTRY_BY_ID: Record<string, ComponentDef> = Object.fromEntries(
   REGISTRY.map((def) => [def.id, def]),
-)
+);
 
 /** Возвращает ComponentDef по id. */
 export function getComponentDef(id: string): ComponentDef | undefined {
-  return REGISTRY_BY_ID[id]
+  return REGISTRY_BY_ID[id];
 }
 
 /** Проверяет, является ли компонент контейнером. */
 export function isContainerComponent(id: string): boolean {
-  return REGISTRY_BY_ID[id]?.isContainer ?? false
+  return REGISTRY_BY_ID[id]?.isContainer ?? false;
 }

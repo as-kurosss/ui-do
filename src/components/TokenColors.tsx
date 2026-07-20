@@ -1,8 +1,8 @@
-import type { TokenSet } from '@/core/ir'
+import type { TokenSet } from '@/core/ir';
 
 interface TokenColorsProps {
-  tokens: TokenSet
-  onChange: (patch: Partial<TokenSet>) => void
+  tokens: TokenSet;
+  onChange: (patch: Partial<TokenSet>) => void;
 }
 
 const COLOR_LABELS: Record<keyof TokenSet['colors'], string> = {
@@ -24,34 +24,47 @@ const COLOR_LABELS: Record<keyof TokenSet['colors'], string> = {
   destructiveForeground: 'Destructive Foreground',
   border: 'Border',
   input: 'Input',
-}
+};
 
 const FONTS_GROUP: (keyof TokenSet['colors'])[] = [
-  'background', 'foreground', 'card', 'cardForeground',
-]
+  'background',
+  'foreground',
+  'card',
+  'cardForeground',
+];
 
 const ACCENTS_GROUP: (keyof TokenSet['colors'])[] = [
-  'primary', 'primaryForeground', 'secondary', 'secondaryForeground',
-  'muted', 'mutedForeground', 'accent', 'accentForeground',
-]
+  'primary',
+  'primaryForeground',
+  'secondary',
+  'secondaryForeground',
+  'muted',
+  'mutedForeground',
+  'accent',
+  'accentForeground',
+];
 
 const SYSTEM_GROUP: (keyof TokenSet['colors'])[] = [
-  'popover', 'popoverForeground', 'destructive', 'destructiveForeground',
-  'border', 'input',
-]
+  'popover',
+  'popoverForeground',
+  'destructive',
+  'destructiveForeground',
+  'border',
+  'input',
+];
 
 function ColorRow({
   tokens,
   onChange,
   keys,
 }: {
-  tokens: TokenSet
-  onChange: (patch: Partial<TokenSet>) => void
-  keys: (keyof TokenSet['colors'])[]
+  tokens: TokenSet;
+  onChange: (patch: Partial<TokenSet>) => void;
+  keys: (keyof TokenSet['colors'])[];
 }) {
   const setColor = (key: keyof TokenSet['colors'], value: string) => {
-    onChange({ colors: { ...tokens.colors, [key]: value } })
-  }
+    onChange({ colors: { ...tokens.colors, [key]: value } });
+  };
 
   return (
     <div className="grid grid-cols-2 gap-x-3 gap-y-2">
@@ -74,7 +87,7 @@ function ColorRow({
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 export function TokenColors({ tokens, onChange }: TokenColorsProps) {
@@ -93,5 +106,5 @@ export function TokenColors({ tokens, onChange }: TokenColorsProps) {
         <ColorRow tokens={tokens} onChange={onChange} keys={SYSTEM_GROUP} />
       </div>
     </div>
-  )
+  );
 }

@@ -1,36 +1,36 @@
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
-import { useEditorStore } from '@/store/editor'
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import { useEditorStore } from '@/store/editor';
 
 export function ScreenTabs() {
   const { project, activeScreenId, setActiveScreen, addScreen, removeScreen, renameScreen } =
-    useEditorStore()
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editValue, setEditValue] = useState('')
+    useEditorStore();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
 
-  const screens = project.screens
+  const screens = project.screens;
 
   const handleAdd = () => {
-    const count = screens.length + 1
-    addScreen(`Screen ${count}`, `/${`screen-${count}`}`)
-  }
+    const count = screens.length + 1;
+    addScreen(`Screen ${count}`, `/${`screen-${count}`}`);
+  };
 
   const handleDoubleClick = (id: string, name: string) => {
-    setEditingId(id)
-    setEditValue(name)
-  }
+    setEditingId(id);
+    setEditValue(name);
+  };
 
   const handleRenameSubmit = (id: string) => {
-    const trimmed = editValue.trim()
-    if (trimmed) renameScreen(id, trimmed)
-    setEditingId(null)
-  }
+    const trimmed = editValue.trim();
+    if (trimmed) renameScreen(id, trimmed);
+    setEditingId(null);
+  };
 
   const handleRemove = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation()
-    if (screens.length <= 1) return
-    removeScreen(id)
-  }
+    e.stopPropagation();
+    if (screens.length <= 1) return;
+    removeScreen(id);
+  };
 
   return (
     <div className="flex items-center gap-0.5 overflow-x-auto max-w-[300px]">
@@ -55,8 +55,8 @@ export function ScreenTabs() {
               onChange={(e) => setEditValue(e.target.value)}
               onBlur={() => handleRenameSubmit(s.id)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') handleRenameSubmit(s.id)
-                if (e.key === 'Escape') setEditingId(null)
+                if (e.key === 'Enter') handleRenameSubmit(s.id);
+                if (e.key === 'Escape') setEditingId(null);
               }}
               onClick={(e) => e.stopPropagation()}
             />
@@ -83,5 +83,5 @@ export function ScreenTabs() {
         +
       </button>
     </div>
-  )
+  );
 }

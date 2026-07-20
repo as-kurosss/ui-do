@@ -1,45 +1,48 @@
-import { Label } from '@/components/ui/label'
-import { useEditorStore } from '@/store/editor'
-import { TokenColors } from './TokenColors'
-import type { TokenSet } from '@/core/ir'
+import { Label } from '@/components/ui/label';
+import { useEditorStore } from '@/store/editor';
+import { TokenColors } from './TokenColors';
+import type { TokenSet } from '@/core/ir';
 
 const FONT_OPTIONS = [
-  'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat',
-  'Poppins', 'Nunito', 'Playfair Display', 'Unbounded',
-  'JetBrains Mono', 'Fira Code',
-]
+  'Inter',
+  'Roboto',
+  'Open Sans',
+  'Lato',
+  'Montserrat',
+  'Poppins',
+  'Nunito',
+  'Playfair Display',
+  'Unbounded',
+  'JetBrains Mono',
+  'Fira Code',
+];
 
 export function TokensPanel() {
-  const { project, activeScreenId, setTokens } = useEditorStore()
-  const screen = project.screens.find((s) => s.id === activeScreenId)
-    ?? project.screens[0]
+  const { project, activeScreenId, setTokens } = useEditorStore();
+  const screen = project.screens.find((s) => s.id === activeScreenId) ?? project.screens[0];
 
   if (!screen) {
-    return (
-      <div className="p-4 text-sm text-muted-foreground">
-        No screen selected
-      </div>
-    )
+    return <div className="p-4 text-sm text-muted-foreground">No screen selected</div>;
   }
 
   const handleChange = (patch: Partial<TokenSet>) => {
     // Merge: patch can contain { colors: { ... } } or { radius } or { fonts: { ... } }
-    const merged: Partial<TokenSet> = {}
+    const merged: Partial<TokenSet> = {};
 
     if ('colors' in patch && patch.colors) {
-      merged.colors = { ...screen.tokens.colors, ...patch.colors }
+      merged.colors = { ...screen.tokens.colors, ...patch.colors };
     }
 
     if ('radius' in patch) {
-      merged.radius = patch.radius
+      merged.radius = patch.radius;
     }
 
     if ('fonts' in patch && patch.fonts) {
-      merged.fonts = { ...screen.tokens.fonts, ...patch.fonts }
+      merged.fonts = { ...screen.tokens.fonts, ...patch.fonts };
     }
 
-    setTokens(screen.id, merged)
-  }
+    setTokens(screen.id, merged);
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -52,10 +55,7 @@ export function TokensPanel() {
         <h3 className="mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
           Colors
         </h3>
-        <TokenColors
-          tokens={screen.tokens}
-          onChange={(patch) => handleChange(patch)}
-        />
+        <TokenColors tokens={screen.tokens} onChange={(patch) => handleChange(patch)} />
       </section>
 
       <hr className="border-border" />
@@ -102,7 +102,9 @@ export function TokensPanel() {
               onChange={(e) => handleChange({ fonts: { sans: e.target.value } })}
             >
               {FONT_OPTIONS.map((f) => (
-                <option key={f} value={f}>{f}</option>
+                <option key={f} value={f}>
+                  {f}
+                </option>
               ))}
             </select>
           </div>
@@ -112,10 +114,14 @@ export function TokensPanel() {
               <select
                 className="flex h-8 w-full rounded-md border border-input bg-background px-2 py-1 text-xs"
                 value={screen.tokens.fonts.display}
-                onChange={(e) => handleChange({ fonts: { ...screen.tokens.fonts, display: e.target.value } })}
+                onChange={(e) =>
+                  handleChange({ fonts: { ...screen.tokens.fonts, display: e.target.value } })
+                }
               >
                 {FONT_OPTIONS.map((f) => (
-                  <option key={f} value={f}>{f}</option>
+                  <option key={f} value={f}>
+                    {f}
+                  </option>
                 ))}
               </select>
             </div>
@@ -123,5 +129,5 @@ export function TokensPanel() {
         </div>
       </section>
     </div>
-  )
+  );
 }

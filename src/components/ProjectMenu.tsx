@@ -1,62 +1,62 @@
-import { useRef, useState } from 'react'
-import { useEditorStore } from '@/store/editor'
+import { useRef, useState } from 'react';
+import { useEditorStore } from '@/store/editor';
 
 export function ProjectMenu() {
-  const { project, newProject, importProject, setProjectName } = useEditorStore()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [editingName, setEditingName] = useState(false)
-  const [nameValue, setNameValue] = useState('')
+  const { project, newProject, importProject, setProjectName } = useEditorStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [editingName, setEditingName] = useState(false);
+  const [nameValue, setNameValue] = useState('');
 
   const handleSave = () => {
-    const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${project.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.json`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
+    const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${project.name.replace(/[^a-zA-Z0-9_-]/g, '_')}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleLoad = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
     reader.onload = () => {
       try {
-        const parsed = JSON.parse(reader.result as string)
+        const parsed = JSON.parse(reader.result as string);
         if (parsed && typeof parsed === 'object' && 'version' in parsed && 'screens' in parsed) {
-          importProject(parsed)
+          importProject(parsed);
         } else {
-          alert('Invalid project file')
+          alert('Invalid project file');
         }
       } catch {
-        alert('Invalid JSON file')
+        alert('Invalid JSON file');
       }
-    }
-    reader.readAsText(file)
+    };
+    reader.readAsText(file);
     // Reset input so the same file can be loaded again
-    e.target.value = ''
-  }
+    e.target.value = '';
+  };
 
   const handleNew = () => {
     if (project.screens.length > 1 || project.screens[0]?.root.children.length > 0) {
-      if (!confirm('Create a new project? Current project will be lost.')) return
+      if (!confirm('Create a new project? Current project will be lost.')) return;
     }
-    const name = prompt('Project name:', 'Untitled')
-    if (!name) return
-    newProject(name)
-  }
+    const name = prompt('Project name:', 'Untitled');
+    if (!name) return;
+    newProject(name);
+  };
 
   const handleNameDoubleClick = () => {
-    setEditingName(true)
-    setNameValue(project.name)
-  }
+    setEditingName(true);
+    setNameValue(project.name);
+  };
 
   const handleNameSubmit = () => {
-    const trimmed = nameValue.trim()
-    if (trimmed) setProjectName(trimmed)
-    setEditingName(false)
-  }
+    const trimmed = nameValue.trim();
+    if (trimmed) setProjectName(trimmed);
+    setEditingName(false);
+  };
 
   return (
     <div className="flex items-center gap-1">
@@ -69,8 +69,8 @@ export function ProjectMenu() {
           onChange={(e) => setNameValue(e.target.value)}
           onBlur={handleNameSubmit}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') handleNameSubmit()
-            if (e.key === 'Escape') setEditingName(false)
+            if (e.key === 'Enter') handleNameSubmit();
+            if (e.key === 'Escape') setEditingName(false);
           }}
         />
       ) : (
@@ -118,5 +118,5 @@ export function ProjectMenu() {
         onChange={handleLoad}
       />
     </div>
-  )
+  );
 }

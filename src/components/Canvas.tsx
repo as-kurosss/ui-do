@@ -1,20 +1,21 @@
-import { useEditorStore } from '@/store/editor'
-import { CanvasRenderer } from './CanvasRenderer'
-import type { NodeId } from '@/core/ir'
+import { useEditorStore } from '@/store/editor';
+import { CanvasRenderer } from './CanvasRenderer';
+import type { NodeId } from '@/core/ir';
 
-export function Canvas({ onContextMenu }: {
-  onContextMenu?: (id: NodeId, e: React.MouseEvent) => void
+export function Canvas({
+  onContextMenu,
+}: {
+  onContextMenu?: (id: NodeId, e: React.MouseEvent) => void;
 }) {
-  const { project, activeScreenId, selectedId, select } = useEditorStore()
-  const screen = project.screens.find((s) => s.id === activeScreenId)
-    ?? project.screens[0]
+  const { project, activeScreenId, selectedId, select } = useEditorStore();
+  const screen = project.screens.find((s) => s.id === activeScreenId) ?? project.screens[0];
 
   if (!screen) {
     return (
       <div className="flex flex-1 items-center justify-center bg-muted/30">
         <p className="text-sm text-muted-foreground">No screens — add one to get started</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -30,5 +31,5 @@ export function Canvas({ onContextMenu }: {
         </div>
       </div>
     </div>
-  )
+  );
 }

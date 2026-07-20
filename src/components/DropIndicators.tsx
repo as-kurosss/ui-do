@@ -1,20 +1,21 @@
-import { useEditorStore } from '@/store/editor'
+import { useEditorStore } from '@/store/editor';
 
 /**
  * Глобальные индикаторы позиции дропа.
  * Рендерит линию (top/bottom) или пунктирную рамку (inside).
  */
 export function DropIndicators() {
-  const dropHint = useEditorStore((s) => s.dropHint)
-  if (!dropHint) return null
+  const dropHint = useEditorStore((s) => s.dropHint);
+  if (!dropHint) return null;
 
-  const el = document.querySelector(`[data-bn-id="${dropHint.parentId}"]`)
-  if (!el) return null
+  const el = document.querySelector(`[data-bn-id="${dropHint.parentId}"]`);
+  if (!el) return null;
 
-  const rect = el.getBoundingClientRect()
-  const style = getComputedStyle(el)
-  const isRow = style.display === 'flex' &&
-    (style.flexDirection === 'row' || style.flexDirection === 'row-reverse')
+  const rect = el.getBoundingClientRect();
+  const style = getComputedStyle(el);
+  const isRow =
+    style.display === 'flex' &&
+    (style.flexDirection === 'row' || style.flexDirection === 'row-reverse');
 
   if (dropHint.edge === 'inside') {
     return (
@@ -29,55 +30,53 @@ export function DropIndicators() {
           borderRadius: style.borderRadius || '4px',
         }}
       />
-    )
+    );
   }
 
   // top / bottom — линия между детьми
-  const children = Array.from(el.children).filter(
-    (child) => child.getAttribute('data-bn-id'),
-  )
-  let lineTop: number
-  let lineLeft: number
-  let lineWidth: number
-  let lineHeight: number
+  const children = Array.from(el.children).filter((child) => child.getAttribute('data-bn-id'));
+  let lineTop: number;
+  let lineLeft: number;
+  let lineWidth: number;
+  let lineHeight: number;
 
   if (dropHint.index >= children.length) {
     // После последнего ребёнка
     if (children.length > 0) {
-      const lastChild = children[children.length - 1]
-      const lastRect = lastChild.getBoundingClientRect()
+      const lastChild = children[children.length - 1];
+      const lastRect = lastChild.getBoundingClientRect();
       if (isRow) {
-        lineTop = rect.top
-        lineLeft = lastRect.right
-        lineWidth = 2
-        lineHeight = rect.height
+        lineTop = rect.top;
+        lineLeft = lastRect.right;
+        lineWidth = 2;
+        lineHeight = rect.height;
       } else {
-        lineTop = lastRect.bottom
-        lineLeft = rect.left
-        lineWidth = rect.width
-        lineHeight = 2
+        lineTop = lastRect.bottom;
+        lineLeft = rect.left;
+        lineWidth = rect.width;
+        lineHeight = 2;
       }
     } else {
       // Пустой контейнер — у левого/верхнего края
-      lineTop = rect.top
-      lineLeft = rect.left
-      lineWidth = 2
-      lineHeight = rect.height
+      lineTop = rect.top;
+      lineLeft = rect.left;
+      lineWidth = 2;
+      lineHeight = rect.height;
     }
   } else {
     // Перед ребёнком на позиции index
-    const child = children[dropHint.index]
-    const childRect = child.getBoundingClientRect()
+    const child = children[dropHint.index];
+    const childRect = child.getBoundingClientRect();
     if (isRow) {
-      lineTop = rect.top
-      lineLeft = childRect.left
-      lineWidth = 2
-      lineHeight = rect.height
+      lineTop = rect.top;
+      lineLeft = childRect.left;
+      lineWidth = 2;
+      lineHeight = rect.height;
     } else {
-      lineTop = childRect.top
-      lineLeft = rect.left
-      lineWidth = rect.width
-      lineHeight = 2
+      lineTop = childRect.top;
+      lineLeft = rect.left;
+      lineWidth = rect.width;
+      lineHeight = 2;
     }
   }
 
@@ -91,5 +90,5 @@ export function DropIndicators() {
         height: lineHeight,
       }}
     />
-  )
+  );
 }

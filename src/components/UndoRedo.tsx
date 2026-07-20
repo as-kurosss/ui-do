@@ -1,18 +1,17 @@
-import { useSyncExternalStore } from 'react'
-import { cn } from '@/lib/utils'
-import { useEditorStore } from '@/store/editor'
+import { useSyncExternalStore } from 'react';
+import { cn } from '@/lib/utils';
+import { useEditorStore } from '@/store/editor';
 
 export function UndoRedo() {
-  const { pastStates, futureStates } = useSyncExternalStore(
-    useEditorStore.temporal.subscribe,
-    () => useEditorStore.temporal.getState(),
-  )
+  const { pastStates, futureStates } = useSyncExternalStore(useEditorStore.temporal.subscribe, () =>
+    useEditorStore.temporal.getState(),
+  );
 
-  const canUndo = pastStates.length > 0
-  const canRedo = futureStates.length > 0
+  const canUndo = pastStates.length > 0;
+  const canRedo = futureStates.length > 0;
 
-  const undo = () => useEditorStore.temporal.getState().undo()
-  const redo = () => useEditorStore.temporal.getState().redo()
+  const undo = () => useEditorStore.temporal.getState().undo();
+  const redo = () => useEditorStore.temporal.getState().redo();
 
   return (
     <div className="flex items-center gap-0.5">
@@ -43,5 +42,5 @@ export function UndoRedo() {
         ↪
       </button>
     </div>
-  )
+  );
 }
