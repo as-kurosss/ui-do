@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import { create } from 'zustand'
 import { temporal } from 'zundo'
 import type { NodeId, SpecNode, ProjectSpec, ScreenSpec, TokenSet } from '../core/ir'
@@ -40,8 +41,7 @@ type DeepPartial<T> = {
 // ── Helpers ──
 
 function generateId(): NodeId {
-  // nanoid будет добавлен позже; пока просто для тестов
-  return `n${Math.random().toString(36).slice(2, 10)}` as NodeId
+  return `n${nanoid(8)}` as NodeId
 }
 
 function patchNodeInTree(root: SpecNode, id: NodeId, patch: Partial<SpecNode>): SpecNode {
