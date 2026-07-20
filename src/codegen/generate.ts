@@ -257,7 +257,7 @@ function generateCss(spec: ScreenSpec): string {
   lines.push('')
   lines.push(':root {')
 
-  for (const [key, hex] of Object.entries(colors)) {
+  for (const [key, hex] of Object.entries(colors).sort((a, b) => a[0].localeCompare(b[0]))) {
     const kebab = key.replace(/([A-Z])/g, '-$1').toLowerCase()
     lines.push(`  --${kebab}: ${oklch(hex)};`)
   }
@@ -279,7 +279,7 @@ function generateCss(spec: ScreenSpec): string {
   lines.push('')
   lines.push('@theme inline {')
 
-  for (const [key] of Object.entries(colors)) {
+  for (const [key] of Object.entries(colors).sort((a, b) => a[0].localeCompare(b[0]))) {
     const kebab = key.replace(/([A-Z])/g, '-$1').toLowerCase()
     lines.push(`  --color-${kebab}: var(--${kebab});`)
   }
