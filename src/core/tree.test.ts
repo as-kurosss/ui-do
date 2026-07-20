@@ -9,6 +9,7 @@ import {
   createDefaultRoot,
   wrapNode,
   ungroupChildren,
+  createNode,
 } from './tree';
 
 function makeLayout(id: string, children: SpecNode[] = []): LayoutNode {
@@ -159,6 +160,61 @@ describe('wrapNode', () => {
   it('returns null for root node', () => {
     const result = wrapNode(root, 'root');
     expect(result).toBeNull();
+  });
+
+  it('wrapper ID is independent of parent/child IDs', () => {
+    const result = wrapNode(root, 'b1');
+    expect(result).not.toBeNull();
+    const rootNode = findNode(result!, 'root') as LayoutNode;
+    const wrapper = rootNode.children[0] as LayoutNode;
+    expect(wrapper.id).not.toBe(root.id);
+    expect(wrapper.id).not.toBe('b1');
+    expect(wrapper.id).toMatch(/^n[0-9a-zA-Z_-]{8}$/);
+  });
+});
+
+describe('createNode', () => {
+  it('creates a Button node with valid nanoid (8 chars)', () => {
+    const node = createNode('Button');
+    expect(node.kind).toBe('component');
+    expect((node as ComponentNode).component).toBe('Button');
+    expect(node.id).toMatch(/^n[0-9a-zA-Z_-]{8}$/);
+  });
+
+  it('creates a Card node with children that all have valid IDs', () => {
+    const node = createNode('Card') as ComponentNode;
+    expect(node.component).toBe('Card');
+    expect(node.children).toBeDefined();
+    expect(node.children!.length).toBeGreaterThanOrEqual(2);
+    for (const child of node.children!) {
+      expect(child.id).toMatch(/^n[0-9a-zA-Z_-]{8}$/);
+    }
+  });
+
+  it('creates a leaf node (Input) with no children', () => {
+    const node = createNode('Input') as ComponentNode;
+    expect(node.component).toBe('Input');
+    expect(node.children).toBeUndefined();
+  });
+
+  it('each call generates unique IDs', () => {
+    const a = createNode('Button');
+    const b = createNode('Button');
+    expect(a.id).not.toBe(b.id);
+  });
+
+  it('all IDs in a subtree are unique', () => {
+    const card = createNode('Card') as ComponentNode;
+    const allIds = new Set<string>();
+    function walk(n: SpecNode) {
+      expect(allIds.has(n.id)).toBe(false);
+      allIds.add(n.id);
+      const children =
+        n.kind === 'layout' ? n.children : n.kind === 'component' ? (n.children ?? []) : [];
+      children.forEach(walk);
+    }
+    walk(card);
+    expect(allIds.size).toBeGreaterThan(1);
   });
 });
 

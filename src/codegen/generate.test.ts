@@ -156,6 +156,34 @@ describe('generateScreen', () => {
     expect(css).toContain('@layer base {');
   });
 
+  it('generateCss is deterministic — same spec produces identical output', () => {
+    const a = generateScreen(LOGIN_SPEC).css;
+    const b = generateScreen(LOGIN_SPEC).css;
+    expect(a).toBe(b);
+  });
+
+  it('generateCss sorts color keys by original camelCase names (before derived vars)', () => {
+    const { css } = generateScreen(LOGIN_SPEC);
+    const rootSection = css.substring(css.indexOf(':root'), css.indexOf('@theme'));
+    const lines = rootSection.split('\n');
+    // Extract only the color vars from Object.entries(colors) — before derived vars
+    const colorKeys = Object.keys(LOGIN_SPEC.tokens.colors).sort();
+    // Compare first N CSS vars against sorted camelCase keys
+    const cssVars: string[] = [];
+    for (const line of lines) {
+      const m = line.match(/--([\w-]+):/);
+      if (m) cssVars.push(m[1]);
+    }
+    // The first N color-only vars (before derived) should be in same order as sorted color keys
+    const colorCount = Object.keys(LOGIN_SPEC.tokens.colors).length;
+    const firstNVars = cssVars.slice(0, colorCount);
+    // Convert kebab back to camelCase
+    const camels = firstNVars.map((v) =>
+      v.replace(/-([a-z])/g, (_, c) => c.toUpperCase()),
+    );
+    expect(camels).toEqual(colorKeys);
+  });
+
   it('generates htmlHead with font links', () => {
     const { htmlHead } = generateScreen(LOGIN_SPEC);
     expect(htmlHead).toContain('fonts.googleapis.com');
