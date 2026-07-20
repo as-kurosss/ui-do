@@ -2,12 +2,13 @@ import { describe, it, expect } from 'vitest'
 import { canContain, REGISTRY, REGISTRY_BY_ID, getComponentDef } from './registry'
 
 describe('REGISTRY', () => {
-  it('contains all 22 MVP components', () => {
+  it('contains all 26 MVP components including Select sub-entries', () => {
     const ids = REGISTRY.map((def) => def.id).sort()
     expect(ids).toEqual([
       'Alert', 'Avatar', 'Badge', 'Button', 'Card', 'CardContent',
       'CardDescription', 'CardFooter', 'CardHeader', 'CardTitle',
-      'Checkbox', 'Input', 'Label', 'Progress', 'Select', 'Separator',
+      'Checkbox', 'Input', 'Label', 'Progress', 'Select', 'SelectContent',
+      'SelectItem', 'SelectTrigger', 'SelectValue', 'Separator',
       'Switch', 'Tabs', 'TabsContent', 'TabsList', 'TabsTrigger', 'Textarea',
     ])
   })
@@ -112,6 +113,46 @@ describe('canContain', () => {
 
   it('unknown parent accepts everything', () => {
     expect(canContain('Unknown', 'Button')).toBe(true)
+  })
+
+  describe('Select', () => {
+    it('accepts SelectTrigger', () => {
+      expect(canContain('Select', 'SelectTrigger')).toBe(true)
+    })
+    it('accepts SelectValue', () => {
+      expect(canContain('Select', 'SelectValue')).toBe(true)
+    })
+    it('accepts SelectContent', () => {
+      expect(canContain('Select', 'SelectContent')).toBe(true)
+    })
+    it('rejects Button', () => {
+      expect(canContain('Select', 'Button')).toBe(false)
+    })
+    it('rejects Card', () => {
+      expect(canContain('Select', 'Card')).toBe(false)
+    })
+  })
+
+  describe('SelectContent', () => {
+    it('accepts SelectItem', () => {
+      expect(canContain('SelectContent', 'SelectItem')).toBe(true)
+    })
+    it('accepts Button', () => {
+      expect(canContain('SelectContent', 'Button')).toBe(true)
+    })
+    it('rejects Card', () => {
+      expect(canContain('SelectContent', 'Card')).toBe(false)
+    })
+  })
+
+  describe('SelectTrigger', () => {
+    it('rejects any child', () => {
+      expect(canContain('SelectTrigger', 'Button')).toBe(false)
+    })
+  })
+
+  it('generic container rejects Select', () => {
+    expect(canContain('CardContent', 'Select')).toBe(false)
   })
 
   it('new node (null child) is always accepted', () => {

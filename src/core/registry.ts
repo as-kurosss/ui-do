@@ -25,7 +25,7 @@ export type InspectorField =
 
 // ── Family tags for nesting rules ──
 
-type Family = 'card' | 'card-header' | 'tabs' | 'leaf' | 'container'
+type Family = 'card' | 'card-header' | 'tabs' | 'leaf' | 'container' | 'select' | 'select-content'
 
 const componentFamily: Record<string, Family> = {
   Button: 'leaf',
@@ -34,7 +34,11 @@ const componentFamily: Record<string, Family> = {
   Textarea: 'leaf',
   Checkbox: 'leaf',
   Switch: 'leaf',
-  Select: 'leaf',
+  Select: 'select',
+  SelectTrigger: 'leaf',
+  SelectValue: 'leaf',
+  SelectContent: 'select-content',
+  SelectItem: 'leaf',
   Card: 'card',
   CardHeader: 'card-header',
   CardTitle: 'leaf',
@@ -68,6 +72,14 @@ export function canContain(parentId: string, childId: string | null): boolean {
   // TabsList → только TabsTrigger (до семейных правил, т.к. TabsList = family card-header)
   if (parentId === 'TabsList') return childId === 'TabsTrigger'
 
+  // Select → только SelectTrigger | SelectValue | SelectContent
+  if (pf === 'select') return ['SelectTrigger', 'SelectValue', 'SelectContent'].includes(childId)
+
+  // SelectContent → принимает всё, кроме карточной и таб-семей
+  if (pf === 'select-content') {
+    return !CARD_FAMILY.includes(cf) && !TABS_FAMILY.includes(cf)
+  }
+
   // Card → только CardHeader | CardContent | CardFooter
   if (pf === 'card') return cf === 'card-header' || cf === 'container'
 
@@ -84,8 +96,8 @@ export function canContain(parentId: string, childId: string | null): boolean {
   // Leaf-компоненты не принимают детей
   if (LEAF_FAMILIES.includes(pf)) return false
 
-  // Card- и Tabs-семейства не могут быть помещены в произвольные контейнеры
-  if (CARD_FAMILY.includes(cf) || TABS_FAMILY.includes(cf)) return false
+  // Card-, Tabs- и Select-семейства не могут быть помещены в произвольные контейнеры
+  if (CARD_FAMILY.includes(cf) || TABS_FAMILY.includes(cf) || cf === 'select') return false
 
   return true
 }
@@ -193,8 +205,23 @@ export const REGISTRY: ComponentDef[] = [
     id: 'Select',
     module: '@/components/ui/select',
     namedExport: 'Select',
-    isContainer: false,
-    defaults: {},
+    isContainer: true,
+    defaults: {
+      children: () => [
+        {
+          kind: 'component', id: '' as never, component: 'SelectTrigger',
+          children: [
+            { kind: 'component', id: '' as never, component: 'SelectValue', children: [] },
+          ],
+        },
+        {
+          kind: 'component', id: '' as never, component: 'SelectContent',
+          children: [
+            { kind: 'component', id: '' as never, component: 'SelectItem' },
+          ],
+        },
+      ],
+    },
     inspector: [
       {
         kind: 'select', target: 'prop', prop: 'placeholder',
@@ -202,6 +229,44 @@ export const REGISTRY: ComponentDef[] = [
       },
     ],
     events: ['onValueChange'],
+  },
+  {
+    id: 'SelectTrigger',
+    module: '@/components/ui/select',
+    namedExport: 'SelectTrigger',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SelectValue',
+    module: '@/components/ui/select',
+    namedExport: 'SelectValue',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SelectContent',
+    module: '@/components/ui/select',
+    namedExport: 'SelectContent',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SelectItem',
+    module: '@/components/ui/select',
+    namedExport: 'SelectItem',
+    isContainer: false,
+    defaults: {
+      props: { value: 'option-1' },
+    },
+    inspector: [
+      {
+        kind: 'text', target: 'prop', prop: 'value', label: 'Value',
+      },
+    ],
   },
   {
     id: 'Card',
