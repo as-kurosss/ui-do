@@ -173,7 +173,7 @@ ui-do/
 │   │   ├── TokenInjector.tsx — Применение токенов (M4)
 │   │   ├── ProjectMenu.tsx   — Save/Load/New (M7)
 │   │   ├── ScreenTabs.tsx    — Управление экранами (M7)
-│   │   ├── ContextMenu.tsx   — Контекстное меню (M9)
+│   │   ├── ContextMenu.tsx   — Контекстное меню (дополнительно, вне спеки)
 │   │   ├── UndoRedo.tsx      — undo/redo UI (M7)
 │   │   ├── DragOverlayContent.tsx — (M3)
 │   │   ├── DropIndicators.tsx — (M3)
