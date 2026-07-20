@@ -265,11 +265,12 @@ export const useEditorStore = create<EditorState>()(
           if (!screen || !state.clipboard) return state;
           const clone: SpecNode = JSON.parse(JSON.stringify(state.clipboard));
           assignNewIds(clone);
-          const targetParent = parentId ?? (screen.root.id as NodeId);
+          const targetParent = parentId ?? screen.root.id;
           const targetIndex =
             index ??
             (() => {
-              const parentInfo = findParent(screen.root, state.selectedId!);
+              if (!state.selectedId) return 0;
+              const parentInfo = findParent(screen.root, state.selectedId);
               return parentInfo ? parentInfo.index + 1 : 0;
             })();
           const newRoot = treeInsert(screen.root, targetParent, targetIndex, clone);
@@ -400,8 +401,8 @@ export const useEditorStore = create<EditorState>()(
     }),
     {
       limit: 100,
-      partialize: (state) => {
-        const { dropHint: _dropHint, clipboard: _clipboard, ...rest } = state as any;
+    partialize: (state: EditorState): Omit<EditorState, 'dropHint' | 'clipboard'> => {
+        const { dropHint: _dropHint, clipboard: _clipboard, ...rest } = state;
         return rest;
       },
       equality: (prev, next) => {
@@ -429,13 +430,17 @@ function findActiveScreen(state: EditorState): ScreenSpec | undefined {
 }
 
 function updateScreenRoot(state: EditorState, newRoot: SpecNode): EditorState {
+  // Root must always be a LayoutNode by IR contract
+  if (newRoot.kind !== 'layout') {
+    throw new Error('Root node must be a LayoutNode');
+  }
   return {
     ...state,
     project: {
       ...state.project,
       screens: state.project.screens.map((s) =>
         s.id === (state.activeScreenId || state.project.screens[0]?.id)
-          ? { ...s, root: newRoot as any }
+          ? { ...s, root: newRoot }
           : s,
       ),
     },
