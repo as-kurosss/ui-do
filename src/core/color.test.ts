@@ -33,7 +33,20 @@ describe('hexToOklch', () => {
     expect(Number(C)).toBeGreaterThan(0.1)
   })
 
-  it('handles hex without # prefix', () => {
-    expect(hexToOklch('000000')).toBe('oklch(0 0 0)')
+  it('throws on invalid hex string (#xyz)', () => {
+    expect(() => hexToOklch('#xyz')).toThrow('Invalid hex color')
+  })
+
+  it('throws on short hex (#fff)', () => {
+    expect(() => hexToOklch('#fff')).toThrow('Invalid hex color')
+  })
+
+  it('throws on hex without # prefix', () => {
+    expect(() => hexToOklch('000000')).toThrow('Invalid hex color')
+  })
+
+  it('continues to convert valid hex', () => {
+    expect(hexToOklch('#000000')).toBe('oklch(0 0 0)')
+    expect(hexToOklch('#ffffff')).toBe('oklch(1 0 0)')
   })
 })

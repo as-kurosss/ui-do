@@ -1,3 +1,5 @@
+const HEX_RE = /^#[0-9a-fA-F]{6}$/
+
 /**
  * Converts a hex color (#rrggbb) to Oklch CSS notation.
  *
@@ -48,6 +50,9 @@ function roundTo(n: number, decimals: number): number {
  * @returns Oklch string like "oklch(0.5 0.1 250)"
  */
 export function hexToOklch(hex: string): string {
+  if (!HEX_RE.test(hex)) {
+    throw new Error(`Invalid hex color: "${hex}". Expected #rrggbb format.`)
+  }
   const [rRaw, gRaw, bRaw] = hexToRgb(hex)
   const r = srgbToLinear(rRaw)
   const g = srgbToLinear(gRaw)
