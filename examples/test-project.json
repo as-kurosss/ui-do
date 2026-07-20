@@ -1,0 +1,57 @@
+{
+  "version": 1, "id": "p1", "name": "TestApp",
+  "screens": [{
+    "version": 1, "id": "s1", "name": "Login", "route": "/login",
+    "tokens": {
+      "colors": {
+        "background": "#ffffff", "foreground": "#0a0a0a", "card": "#ffffff",
+        "primary": "#171717", "primaryForeground": "#fafafa",
+        "muted": "#f5f5f5", "mutedForeground": "#737373",
+        "accent": "#f5f5f5", "accentForeground": "#171717",
+        "destructive": "#dc2626", "destructiveForeground": "#fafafa",
+        "border": "#e5e5e5", "input": "#e5e5e5"
+      },
+      "radius": 10,
+      "fonts": { "sans": "Inter", "display": "Unbounded" }
+    },
+    "root": {
+      "kind": "layout", "id": "n1", "display": "flex", "direction": "column",
+      "gap": 4, "align": "center", "justify": "center", "className": "min-h-screen",
+      "children": [{
+        "kind": "component", "id": "n2", "component": "Card", "className": "w-80",
+        "children": [
+          { "kind": "component", "id": "n3", "component": "CardHeader", "children": [
+              { "kind": "component", "id": "n4", "component": "CardTitle", "children": [
+                  { "kind": "text", "id": "n5", "text": "Вход в аккаунт" } ] } ] },
+          { "kind": "component", "id": "n6", "component": "CardContent", "children": [
+              { "kind": "component", "id": "n7", "component": "Input",
+                "props": { "placeholder": "Email" }, "events": { "onChange": "onEmail" } },
+              { "kind": "component", "id": "n8", "component": "Button",
+                "className": "w-full", "events": { "onClick": "submit" },
+                "children": [ { "kind": "text", "id": "n9", "text": "Войти" } ] } ] }
+        ]
+      }]
+    }
+  }, {
+    "version": 1, "id": "s2", "name": "Home", "route": "/",
+    "tokens": {
+      "colors": {
+        "background": "#ffffff", "foreground": "#0a0a0a", "card": "#ffffff",
+        "primary": "#171717", "primaryForeground": "#fafafa",
+        "muted": "#f5f5f5", "mutedForeground": "#737373",
+        "accent": "#f5f5f5", "accentForeground": "#171717",
+        "destructive": "#dc2626", "destructiveForeground": "#fafafa",
+        "border": "#e5e5e5", "input": "#e5e5e5"
+      },
+      "radius": 10,
+      "fonts": { "sans": "Inter" }
+    },
+    "root": {
+      "kind": "layout", "id": "n10", "display": "flex", "direction": "column",
+      "align": "center", "justify": "center", "className": "min-h-screen",
+      "children": [
+        { "kind": "text", "id": "n11", "text": "Welcome Home", "as": "h1", "className": "text-2xl" }
+      ]
+    }
+  }]
+}
