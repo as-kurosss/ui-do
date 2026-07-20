@@ -262,11 +262,11 @@ function generateCss(spec: ScreenSpec): string {
   lines.push('  --popover-foreground: var(--foreground);');
   lines.push('  --secondary: var(--muted);');
   lines.push('  --secondary-foreground: var(--muted-foreground);');
-  lines.push('  --chart-1: oklch(0.646 0.222 41.116);');
-  lines.push('  --chart-2: oklch(0.6 0.118 184.704);');
-  lines.push('  --chart-3: oklch(0.398 0.07 227.392);');
-  lines.push('  --chart-4: oklch(0.828 0.189 84.429);');
-  lines.push('  --chart-5: oklch(0.769 0.188 70.08);');
+  lines.push('  --chart-1: var(--primary);');
+  lines.push('  --chart-2: var(--accent);');
+  lines.push('  --chart-3: var(--muted-foreground);');
+  lines.push('  --chart-4: var(--destructive);');
+  lines.push('  --chart-5: var(--border);');
   lines.push('  --ring: var(--primary);');
   lines.push(`  --radius: ${radiusRem}rem;`);
   lines.push('}');
