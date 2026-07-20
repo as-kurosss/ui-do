@@ -218,6 +218,27 @@ describe('createNode', () => {
     walk(card);
     expect(allIds.size).toBeGreaterThan(1);
   });
+
+  it('creates a Select with SelectTrigger, SelectValue, SelectContent, SelectItem', () => {
+    const node = createNode('Select') as ComponentNode;
+    expect(node.component).toBe('Select');
+    expect(node.children).toBeDefined();
+    expect(node.children!.length).toBe(2);
+    const trigger = node.children![0] as ComponentNode;
+    expect(trigger.component).toBe('SelectTrigger');
+    expect(trigger.children).toBeDefined();
+    expect(trigger.children![0]).toBeDefined();
+    expect((trigger.children![0] as ComponentNode).component).toBe('SelectValue');
+    const content = node.children![1] as ComponentNode;
+    expect(content.component).toBe('SelectContent');
+    expect(content.children).toBeDefined();
+    expect(content.children!.length).toBe(1);
+    expect((content.children![0] as ComponentNode).component).toBe('SelectItem');
+  });
+
+  it('throws for unknown component', () => {
+    expect(() => createNode('NonExistent' as any)).toThrow('Unknown component NonExistent');
+  });
 });
 
 describe('ungroupChildren', () => {

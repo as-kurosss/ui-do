@@ -184,6 +184,49 @@ describe('generateScreen', () => {
     expect(camels).toEqual(colorKeys);
   });
 
+  it('chart colors derive from palette tokens, not hardcoded oklch', () => {
+    const { css } = generateScreen(LOGIN_SPEC);
+    expect(css).toContain('--chart-1: var(--primary);');
+    expect(css).toContain('--chart-2: var(--accent);');
+    expect(css).toContain('--chart-3: var(--muted-foreground);');
+    expect(css).toContain('--chart-4: var(--destructive);');
+    expect(css).toContain('--chart-5: var(--border);');
+    // No hardcoded oklch values for chart variables
+    const chartLines = css.split('\n').filter((l) => l.startsWith('  --chart-'));
+    for (const line of chartLines) {
+      expect(line).not.toMatch(/oklch\(/);
+    }
+  });
+
+  it('all 18 color variables are present in :root', () => {
+    const { css } = generateScreen(LOGIN_SPEC);
+    const rootSection = css.substring(css.indexOf(':root'), css.indexOf('@theme'));
+    // Color keys from TokenSet
+    const expectedVars = [
+      '--background',
+      '--foreground',
+      '--card',
+      '--card-foreground',
+      '--primary',
+      '--primary-foreground',
+      '--secondary',
+      '--secondary-foreground',
+      '--muted',
+      '--muted-foreground',
+      '--accent',
+      '--accent-foreground',
+      '--popover',
+      '--popover-foreground',
+      '--destructive',
+      '--destructive-foreground',
+      '--border',
+      '--input',
+    ];
+    for (const v of expectedVars) {
+      expect(rootSection).toContain(v);
+    }
+  });
+
   it('generates htmlHead with font links', () => {
     const { htmlHead } = generateScreen(LOGIN_SPEC);
     expect(htmlHead).toContain('fonts.googleapis.com');

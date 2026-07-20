@@ -71,4 +71,94 @@ describe('validateProjectSpec', () => {
     expect(result.valid).toBe(true);
     expect(result.errors).toEqual([]);
   });
+
+  it('catches invalid node kind', () => {
+    const result = validateProjectSpec({
+      version: 1,
+      name: 'test',
+      screens: [
+        {
+          name: 'Login',
+          route: '/login',
+          tokens: { colors: { background: '#ffffff' }, radius: 8, fonts: { sans: 'Inter' } },
+          root: { kind: 'banana', id: 'r1', children: [] },
+        },
+      ],
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes('banana'))).toBe(true);
+  });
+
+  it('catches unknown component', () => {
+    const result = validateProjectSpec({
+      version: 1,
+      name: 'test',
+      screens: [
+        {
+          name: 'Login',
+          route: '/login',
+          tokens: { colors: { background: '#ffffff' }, radius: 8, fonts: { sans: 'Inter' } },
+          root: {
+            kind: 'component',
+            id: 'r1',
+            component: 'FakeWidget',
+            children: [],
+          },
+        },
+      ],
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes('FakeWidget'))).toBe(true);
+  });
+
+  it('rejects invalid hex color', () => {
+    const result = validateProjectSpec({
+      version: 1,
+      name: 'test',
+      screens: [
+        {
+          name: 'Login',
+          route: '/login',
+          tokens: { colors: { primary: '#xyz' }, radius: 8, fonts: { sans: 'Inter' } },
+          root: { kind: 'layout', id: 'r1', display: 'flex', children: [] },
+        },
+      ],
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes('#xyz'))).toBe(true);
+  });
+
+  it('rejects non-numeric radius', () => {
+    const result = validateProjectSpec({
+      version: 1,
+      name: 'test',
+      screens: [
+        {
+          name: 'Login',
+          route: '/login',
+          tokens: { colors: { background: '#ffffff' }, radius: 'big', fonts: { sans: 'Inter' } },
+          root: { kind: 'layout', id: 'r1', display: 'flex', children: [] },
+        },
+      ],
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes('radius'))).toBe(true);
+  });
+
+  it('rejects empty font name', () => {
+    const result = validateProjectSpec({
+      version: 1,
+      name: 'test',
+      screens: [
+        {
+          name: 'Login',
+          route: '/login',
+          tokens: { colors: { background: '#ffffff' }, radius: 8, fonts: { sans: '' } },
+          root: { kind: 'layout', id: 'r1', display: 'flex', children: [] },
+        },
+      ],
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes('sans'))).toBe(true);
+  });
 });

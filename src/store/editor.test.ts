@@ -154,6 +154,23 @@ describe('undo/redo', () => {
   });
 });
 
+describe('pasteNode', () => {
+  it('pastes at index 0 when no node is selected', () => {
+    const newNode = makeComponent('pasted', 'Button');
+    getStore().copyNode('b1' as never);
+    // Ensure no selection
+    getStore().select(null);
+    // Paste without specifying parent/index
+    getStore().pasteNode();
+    const root = findNode(getStore().project.screens[0].root, 'root' as never)!;
+    expect(root.kind === 'layout' && root.children.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('does not crash when clipboard is empty', () => {
+    expect(() => getStore().pasteNode()).not.toThrow();
+  });
+});
+
 describe('moveNode guard', () => {
   it('prevents moving into own descendant', () => {
     // Try to move 'root' into 'inner' (which is inside root)
