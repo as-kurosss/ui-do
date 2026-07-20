@@ -156,7 +156,6 @@ describe('undo/redo', () => {
 
 describe('pasteNode', () => {
   it('pastes at index 0 when no node is selected', () => {
-    const newNode = makeComponent('pasted', 'Button');
     getStore().copyNode('b1' as never);
     // Ensure no selection
     getStore().select(null);
