@@ -127,7 +127,7 @@
 |---|---|
 | `npx tsc --noEmit` | ✅ 0 errors |
 | `npm run lint` | ✅ 0 errors (6 pre-existing shadcn warnings) |
-| `npm test` | ✅ 103/103 passed |
+| `npm test` | ✅ 114/114 passed |
 
 ---
 
@@ -139,12 +139,15 @@
 - Сортировка `Object.entries(colors)` по ключу в `generateCss` (оба цикла: `:root` и `@theme inline`)
 - Замена `Math.random()` на `nanoid(8)` в `generateId()` и `wrapNode`
 - ID больше не наследуются от родительских ID (устранён паттерн `nodeId + '_wrap'`)
+- `wrapNode` принимает `idFactory` параметр, `tree.ts` не зависит от `nanoid`
 
 ### Типизация и валидация
 - Убраны все `id: '' as never` из реестра компонентов
-- Добавлена фабрика `createNode()` с автоматическим присвоением nanoid всем потомкам
+- Фабрика `createNode()` вынесена в отдельный файл `src/core/create-node.ts`
 - Добавлен `HEX_RE` и валидация в `hexToOklch` (throw на невалидный hex)
-- Добавлена функция `validateProjectSpec()` для проверки загружаемых JSON-спецификаций
+- Добавлена глубокая рекурсивная валидация в `validateProjectSpec()` (nodes, tokens, hex, radius, fonts)
+- Устранены `as any` касты в `editor.ts` (updateScreenRoot, partialize, pasteNode)
+- Синхронизирован `TokenSet` тип с рантаймом (addScreen fallback, 18 colors)
 
 ### Компоненты и вложенность
 - `Select` сделан составным (`isContainer: true`) с подкомпонентами SelectTrigger/Value/Content/Item
@@ -157,14 +160,20 @@
 - Отформатированы все 70+ файлов
 - Обновлён README.md (вместо дефолтного Vite-шаблона)
 - Добавлены CSS-переменные: `--card-foreground`, `--secondary`, `--popover`, `--chart-1..5`
+- `nanoid` добавлен как явная зависимость (`npm install nanoid`)
+- Добавлен `@dnd-kit/sortable` для клавиатурной доступности DnD
+- Chart-цвета деривируются из палитры пользователя, не захардкожены oklch
+- Удалён `refactoring.md` из корня репозитория
+- `computeDropHint` не ходит в DOM, rects передаются параметрами
 
-### Тесты (73 → 103)
-- 4 теста hexToOklch (валидация)
-- 10 тестов canContain (Select-семейство)
-- 5 тестов createNode (фабрика, ID, subtree уникальность)
-- 1 тест wrapNode ID independence
-- 3 теста generateCss (детерминизм, сортировка)
-- 9 тестов validateProjectSpec (граничные случаи, валидная спека)
+### Тесты (73 → 103 → 114)
+|- 4 теста hexToOklch (валидация)
+|- 10 тестов canContain (Select-семейство)
+|- 7 тестов createNode (фабрика, ID, subtree уникальность, Select-структура, NonExistent)
+|- 1 тест wrapNode ID independence
+|- 5 тестов generateCss (детерминизм, сортировка, chart-цвета, 18 переменных)
+|- 14 тестов validateProjectSpec (граничные случаи, deep validation: kind, component, hex, radius, fonts)
+|- 2 теста pasteNode (без selectedId, пустой clipboard)
 
 ---
 
@@ -190,6 +199,7 @@ ui-do/
 │   │   ├── ir.ts             — Доменная модель (M1)
 │   │   ├── registry.ts       — Реестр 22 компонентов (M1)
 │   │   ├── tree.ts           — Операции над деревом (M1)
+│   │   ├── create-node.ts    — Фабрика createNode() (Round 2)
 │   │   ├── color.ts          — hexToOklch (M4)
 │   │   ├── dnd-strategy.ts   — Кастомная collisionDetection (M3)
 │   ├── codegen/
@@ -231,5 +241,5 @@ ui-do/
 
 ## Итог
 
-**Все 8 майлстоунов AGENTS.md реализованы полностью.**\
-Проект проходит `tsc --noEmit`, `npm run lint` (0 errors) и `npm test` (103/103).
+**Все 8 майлстоунов AGENTS.md реализованы полностью.**\\
+Проект проходит `tsc --noEmit`, `npm run lint` (0 errors) и `npm test` (114/114).
