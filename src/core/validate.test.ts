@@ -63,7 +63,7 @@ describe('validateProjectSpec', () => {
         {
           name: 'Login',
           route: '/login',
-          tokens: { colors: { background: '#fff' }, radius: 8, fonts: { sans: 'Inter' } },
+          tokens: { colors: { background: '#ffffff' }, radius: 8, fonts: { sans: 'Inter' } },
           root: { kind: 'layout', id: 'r1', display: 'flex', children: [] },
         },
       ],
