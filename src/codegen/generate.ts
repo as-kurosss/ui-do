@@ -301,7 +301,7 @@ function generateCss(spec: ScreenSpec): string {
   lines.push('}');
   lines.push('');
   lines.push('@layer base {');
-  lines.push('  * { @apply border-border outline-ring/50; }');
+  lines.push('  * { @apply border-border outline-[var(--ring)]; }');
   lines.push('  body { @apply bg-background text-foreground font-sans; }');
   lines.push('}');
 
