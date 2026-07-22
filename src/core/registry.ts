@@ -27,7 +27,7 @@ export type InspectorField =
 
 // ── Family tags for nesting rules ──
 
-type Family = 'card' | 'card-header' | 'tabs' | 'leaf' | 'container' | 'select' | 'select-content' | 'sidebar-provider' | 'sidebar' | 'sidebar-content' | 'sidebar-group' | 'sidebar-group-content' | 'sidebar-menu' | 'sidebar-menu-item' | 'sidebar-menu-button';
+type Family = 'card' | 'card-header' | 'tabs' | 'leaf' | 'container' | 'select' | 'select-content' | 'sidebar-provider' | 'sidebar' | 'sidebar-content' | 'sidebar-group' | 'sidebar-group-content' | 'sidebar-menu' | 'sidebar-menu-item' | 'sidebar-menu-button' | 'sidebar-menu-action' | 'sidebar-menu-sub' | 'sidebar-menu-sub-item' | 'sidebar-menu-sub-button';
 
 const componentFamily: Record<string, Family> = {
   Button: 'leaf',
@@ -72,6 +72,23 @@ const componentFamily: Record<string, Family> = {
   SidebarMenu: 'sidebar-menu',
   SidebarMenuItem: 'sidebar-menu-item',
   SidebarMenuButton: 'sidebar-menu-button',
+  SidebarMenuAction: 'leaf',
+  SidebarMenuSub: 'sidebar-menu-sub',
+  SidebarMenuSubItem: 'leaf',
+  SidebarMenuSubButton: 'leaf',
+  // Collapsible family
+  Collapsible: 'container',
+  CollapsibleTrigger: 'leaf',
+  CollapsibleContent: 'container',
+  // DropdownMenu family
+  DropdownMenu: 'container',
+  DropdownMenuTrigger: 'leaf',
+  DropdownMenuContent: 'container',
+  DropdownMenuItem: 'leaf',
+  DropdownMenuSeparator: 'leaf',
+  DropdownMenuLabel: 'leaf',
+  DropdownMenuGroup: 'container',
+  DropdownMenuShortcut: 'leaf',
 };
 
 const LEAF_FAMILIES: Family[] = ['leaf'];
@@ -141,13 +158,33 @@ export function canContain(parentId: string, childId: string | null): boolean {
     return childId === 'SidebarMenuItem';
   }
 
-  // SidebarMenuItem → только SidebarMenuButton
+  // SidebarMenuItem → только SidebarMenuButton | SidebarMenuAction
   if (pf === 'sidebar-menu-item') {
-    return childId === 'SidebarMenuButton';
+    return ['SidebarMenuButton', 'SidebarMenuAction'].includes(childId);
   }
 
   // SidebarMenuButton → только текст/иконки (CodeNode/TextNode) или layout-заполнители
   if (pf === 'sidebar-menu-button') {
+    return childId === null;
+  }
+
+  // SidebarMenuAction → только leaf (иконки)
+  if (pf === 'sidebar-menu-action') {
+    return childId === null;
+  }
+
+  // SidebarMenuSub → только SidebarMenuSubItem
+  if (pf === 'sidebar-menu-sub') {
+    return childId === 'SidebarMenuSubItem';
+  }
+
+  // SidebarMenuSubItem → только SidebarMenuSubButton
+  if (pf === 'sidebar-menu-sub-item') {
+    return childId === 'SidebarMenuSubButton';
+  }
+
+  // SidebarMenuSubButton → только текст/иконки
+  if (pf === 'sidebar-menu-sub-button') {
     return childId === null;
   }
 
@@ -500,6 +537,94 @@ export const REGISTRY: ComponentDef[] = [
     inspector: [],
   },
   {
+    id: 'Collapsible',
+    module: '@/components/ui/collapsible',
+    namedExport: 'Collapsible',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'CollapsibleTrigger',
+    module: '@/components/ui/collapsible',
+    namedExport: 'CollapsibleTrigger',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'CollapsibleContent',
+    module: '@/components/ui/collapsible',
+    namedExport: 'CollapsibleContent',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'DropdownMenu',
+    module: '@/components/ui/dropdown-menu',
+    namedExport: 'DropdownMenu',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'DropdownMenuTrigger',
+    module: '@/components/ui/dropdown-menu',
+    namedExport: 'DropdownMenuTrigger',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'DropdownMenuContent',
+    module: '@/components/ui/dropdown-menu',
+    namedExport: 'DropdownMenuContent',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'DropdownMenuItem',
+    module: '@/components/ui/dropdown-menu',
+    namedExport: 'DropdownMenuItem',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'DropdownMenuSeparator',
+    module: '@/components/ui/dropdown-menu',
+    namedExport: 'DropdownMenuSeparator',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'DropdownMenuLabel',
+    module: '@/components/ui/dropdown-menu',
+    namedExport: 'DropdownMenuLabel',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'DropdownMenuGroup',
+    module: '@/components/ui/dropdown-menu',
+    namedExport: 'DropdownMenuGroup',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'DropdownMenuShortcut',
+    module: '@/components/ui/dropdown-menu',
+    namedExport: 'DropdownMenuShortcut',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
     id: 'Avatar',
     module: '@/components/ui/avatar',
     namedExport: 'Avatar',
@@ -746,6 +871,46 @@ export const REGISTRY: ComponentDef[] = [
         label: 'Label',
       },
     ],
+  },
+  {
+    id: 'SidebarMenuAction',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarMenuAction',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarMenuSub',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarMenuSub',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarMenuSubItem',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarMenuSubItem',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarMenuSubButton',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarMenuSubButton',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'AppSidebar',
+    module: '@/components/app-sidebar',
+    namedExport: 'AppSidebar',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
   },
 ];
 

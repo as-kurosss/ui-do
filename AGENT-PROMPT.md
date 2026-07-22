@@ -161,6 +161,7 @@
 | **TabsList** | Да | — | — | — |
 | **TabsTrigger** | Нет | — | `value` | — |
 | **TabsContent** | Да | — | `value` | — |
+| **AppSidebar** | Да | — | — | — |
 | **SidebarProvider** | Да | — | — | — |
 | **Sidebar** | Да | `collapsible`: offcanvas/icon/none<br>`side`: left/right<br>`variant`: sidebar/floating/inset | — | — |
 
