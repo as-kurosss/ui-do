@@ -1,0 +1,54 @@
+{
+  "$preset": "settings",
+  "$description": "Two-column layout: nav tabs on the left, form content on the right",
+  "root": {
+    "kind": "layout",
+    "id": "PRESET_ROOT",
+    "display": "flex",
+    "direction": "row",
+    "gap": 8,
+    "className": "min-h-screen p-8 max-w-4xl mx-auto",
+    "children": [
+      {
+        "kind": "layout",
+        "id": "PRESET_1",
+        "display": "flex",
+        "direction": "column",
+        "gap": 2,
+        "className": "w-48",
+        "children": [
+          { "kind": "text", "id": "PRESET_2", "text": "Settings", "as": "h2", "className": "text-lg font-semibold mb-2" },
+          { "kind": "component", "id": "PRESET_3", "component": "Button", "variants": { "variant": "secondary" }, "children": [
+            { "kind": "text", "id": "PRESET_4", "text": "Profile" }
+          ]},
+          { "kind": "component", "id": "PRESET_5", "component": "Button", "variants": { "variant": "ghost" }, "children": [
+            { "kind": "text", "id": "PRESET_6", "text": "Account" }
+          ]},
+          { "kind": "component", "id": "PRESET_7", "component": "Button", "variants": { "variant": "ghost" }, "children": [
+            { "kind": "text", "id": "PRESET_8", "text": "Notifications" }
+          ]}
+        ]
+      },
+      {
+        "kind": "layout",
+        "id": "PRESET_9",
+        "display": "flex",
+        "direction": "column",
+        "gap": 4,
+        "className": "flex-1",
+        "children": [
+          { "kind": "text", "id": "PRESET_10", "text": "Profile Settings", "as": "h1", "className": "text-2xl font-bold" },
+          { "kind": "text", "id": "PRESET_11", "text": "Manage your profile settings", "as": "p", "className": "text-muted-foreground" },
+          { "kind": "component", "id": "PRESET_12", "component": "Separator" },
+          { "kind": "component", "id": "PRESET_13", "component": "Label", "props": { "children": "Name" } },
+          { "kind": "component", "id": "PRESET_14", "component": "Input", "props": { "placeholder": "Your name" } },
+          { "kind": "component", "id": "PRESET_15", "component": "Label", "props": { "children": "Email" } },
+          { "kind": "component", "id": "PRESET_16", "component": "Input", "props": { "placeholder": "your@email.com" } },
+          { "kind": "component", "id": "PRESET_17", "component": "Button", "children": [
+            { "kind": "text", "id": "PRESET_18", "text": "Save Changes" }
+          ]}
+        ]
+      }
+    ]
+  }
+}

@@ -1,96 +1,10 @@
 {
   "version": 1,
-  "id": "p1",
-  "name": "TestApp",
+  "name": "Untitled",
   "screens": [
     {
       "version": 1,
-      "id": "s1",
-      "name": "Login",
-      "route": "/login",
-      "tokens": {
-        "colors": {
-          "background": "#ffffff",
-          "foreground": "#0a0a0a",
-          "card": "#ffffff",
-          "cardForeground": "#0a0a0a",
-          "primary": "#171717",
-          "primaryForeground": "#fafafa",
-          "secondary": "#f5f5f5",
-          "secondaryForeground": "#737373",
-          "muted": "#f5f5f5",
-          "mutedForeground": "#737373",
-          "accent": "#f5f5f5",
-          "accentForeground": "#171717",
-          "popover": "#ffffff",
-          "popoverForeground": "#0a0a0a",
-          "destructive": "#dc2626",
-          "destructiveForeground": "#fafafa",
-          "border": "#e5e5e5",
-          "input": "#e5e5e5"
-        },
-        "radius": 10,
-        "fonts": { "sans": "Inter", "display": "Unbounded" }
-      },
-      "root": {
-        "kind": "layout",
-        "id": "n1",
-        "display": "flex",
-        "direction": "column",
-        "gap": 4,
-        "align": "center",
-        "justify": "center",
-        "className": "min-h-screen",
-        "children": [
-          {
-            "kind": "component",
-            "id": "n2",
-            "component": "Card",
-            "className": "w-80",
-            "children": [
-              {
-                "kind": "component",
-                "id": "n3",
-                "component": "CardHeader",
-                "children": [
-                  {
-                    "kind": "component",
-                    "id": "n4",
-                    "component": "CardTitle",
-                    "children": [{ "kind": "text", "id": "n5", "text": "Вход в аккаунт" }]
-                  }
-                ]
-              },
-              {
-                "kind": "component",
-                "id": "n6",
-                "component": "CardContent",
-                "children": [
-                  {
-                    "kind": "component",
-                    "id": "n7",
-                    "component": "Input",
-                    "props": { "placeholder": "Email" },
-                    "events": { "onChange": "onEmail" }
-                  },
-                  {
-                    "kind": "component",
-                    "id": "n8",
-                    "component": "Button",
-                    "className": "w-full",
-                    "events": { "onClick": "submit" },
-                    "children": [{ "kind": "text", "id": "n9", "text": "Войти" }]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "version": 1,
-      "id": "s2",
+      "id": "nZDsM08fB",
       "name": "Home",
       "route": "/",
       "tokens": {
@@ -115,25 +29,85 @@
           "input": "#e5e5e5"
         },
         "radius": 10,
-        "fonts": { "sans": "Inter" }
+        "fonts": {
+          "sans": "Inter",
+          "display": "Unbounded"
+        }
       },
       "root": {
         "kind": "layout",
-        "id": "n10",
+        "id": "nTh8iS9f_",
         "display": "flex",
         "direction": "column",
-        "align": "center",
-        "justify": "center",
+        "gap": 4,
+        "align": "stretch",
         "className": "min-h-screen",
         "children": [
           {
-            "kind": "text",
-            "id": "n11",
-            "text": "Welcome Home",
-            "as": "h1",
-            "className": "text-2xl"
+            "kind": "component",
+            "id": "n6Twd3WZ6",
+            "component": "Textarea"
+          },
+          {
+            "kind": "component",
+            "id": "nFtAhGOyH",
+            "component": "Textarea"
+          },
+          {
+            "kind": "component",
+            "id": "nA8nw9DwI",
+            "component": "Button",
+            "variants": {
+              "variant": "default",
+              "size": "default"
+            }
+          },
+          {
+            "kind": "component",
+            "id": "nccuDb8J2",
+            "component": "Card",
+            "children": [
+              {
+                "kind": "component",
+                "id": "nf7jX-m8m",
+                "component": "Input"
+              },
+              {
+                "kind": "component",
+                "id": "nH93bmpFF",
+                "component": "CardHeader",
+                "children": []
+              },
+              {
+                "kind": "component",
+                "id": "nztlQslgM",
+                "component": "CardContent",
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "component",
+            "id": "nlIbEGWVg",
+            "component": "Button",
+            "variants": {
+              "variant": "default",
+              "size": "icon"
+            },
+            "props": {
+              "disabled": false
+            }
+          },
+          {
+            "kind": "component",
+            "id": "ngimT8Wra",
+            "component": "Input",
+            "props": {
+              "placeholder": "Салам"
+            }
           }
-        ]
+        ],
+        "wrap": false
       }
     }
   ]

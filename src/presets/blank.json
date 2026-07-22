@@ -1,0 +1,14 @@
+{
+  "$preset": "blank",
+  "$description": "Empty flex-column layout with min-h-screen",
+  "root": {
+    "kind": "layout",
+    "id": "PRESET_ROOT",
+    "display": "flex",
+    "direction": "column",
+    "gap": 4,
+    "align": "start",
+    "className": "min-h-screen",
+    "children": []
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "$preset": "landing",
+  "$description": "Hero section + features grid (3 columns) + CTA block + footer",
+  "root": {
+    "kind": "layout",
+    "id": "PRESET_ROOT",
+    "display": "flex",
+    "direction": "column",
+    "gap": 0,
+    "className": "min-h-screen",
+    "children": [
+      {
+        "kind": "layout",
+        "id": "PRESET_1",
+        "display": "flex",
+        "direction": "column",
+        "gap": 4,
+        "align": "center",
+        "justify": "center",
+        "className": "py-24 px-4 text-center",
+        "children": [
+          { "kind": "text", "id": "PRESET_2", "text": "Hero Title", "as": "h1", "className": "text-4xl font-bold" },
+          { "kind": "text", "id": "PRESET_3", "text": "Hero subtitle description goes here", "as": "p", "className": "text-lg text-muted-foreground" }
+        ]
+      },
+      {
+        "kind": "layout",
+        "id": "PRESET_4",
+        "display": "grid",
+        "gap": 6,
+        "className": "px-4 py-12 max-w-6xl mx-auto",
+        "children": [
+          { "kind": "component", "id": "PRESET_5", "component": "Card", "className": "p-6", "children": [
+            { "kind": "component", "id": "PRESET_6", "component": "CardHeader", "children": [
+              { "kind": "component", "id": "PRESET_7", "component": "CardTitle", "children": [
+                { "kind": "text", "id": "PRESET_8", "text": "Feature 1" }
+              ]}
+            ]},
+            { "kind": "component", "id": "PRESET_9", "component": "CardContent", "children": [
+              { "kind": "text", "id": "PRESET_10", "text": "Description of feature 1" }
+            ]}
+          ]},
+          { "kind": "component", "id": "PRESET_11", "component": "Card", "className": "p-6", "children": [
+            { "kind": "component", "id": "PRESET_12", "component": "CardHeader", "children": [
+              { "kind": "component", "id": "PRESET_13", "component": "CardTitle", "children": [
+                { "kind": "text", "id": "PRESET_14", "text": "Feature 2" }
+              ]}
+            ]},
+            { "kind": "component", "id": "PRESET_15", "component": "CardContent", "children": [
+              { "kind": "text", "id": "PRESET_16", "text": "Description of feature 2" }
+            ]}
+          ]},
+          { "kind": "component", "id": "PRESET_17", "component": "Card", "className": "p-6", "children": [
+            { "kind": "component", "id": "PRESET_18", "component": "CardHeader", "children": [
+              { "kind": "component", "id": "PRESET_19", "component": "CardTitle", "children": [
+                { "kind": "text", "id": "PRESET_20", "text": "Feature 3" }
+              ]}
+            ]},
+            { "kind": "component", "id": "PRESET_21", "component": "CardContent", "children": [
+              { "kind": "text", "id": "PRESET_22", "text": "Description of feature 3" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        "kind": "layout",
+        "id": "PRESET_23",
+        "display": "flex",
+        "direction": "column",
+        "gap": 4,
+        "align": "center",
+        "className": "py-16 px-4 bg-muted text-center",
+        "children": [
+          { "kind": "text", "id": "PRESET_24", "text": "Call to Action", "as": "h2", "className": "text-3xl font-bold" },
+          { "kind": "component", "id": "PRESET_25", "component": "Button", "variants": { "size": "lg" }, "children": [
+            { "kind": "text", "id": "PRESET_26", "text": "Get Started" }
+          ]}
+        ]
+      },
+      {
+        "kind": "layout",
+        "id": "PRESET_27",
+        "display": "flex",
+        "direction": "row",
+        "gap": 4,
+        "align": "center",
+        "justify": "center",
+        "className": "py-8 px-4 text-sm text-muted-foreground",
+        "children": [
+          { "kind": "text", "id": "PRESET_28", "text": "© 2026 Company. All rights reserved." }
+        ]
+      }
+    ]
+  }
+}

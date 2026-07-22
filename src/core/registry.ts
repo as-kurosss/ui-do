@@ -22,11 +22,12 @@ export type InspectorField =
   | { kind: 'select'; target: 'variant' | 'prop'; prop: string; label: string; options: string[] }
   | { kind: 'text'; target: 'prop' | 'text'; prop: string; label: string }
   | { kind: 'toggle'; target: 'prop'; prop: string; label: string }
-  | { kind: 'spacing'; label: string };
+  | { kind: 'spacing'; label: string }
+  | { kind: 'width'; label: string; options: string[] };
 
 // ── Family tags for nesting rules ──
 
-type Family = 'card' | 'card-header' | 'tabs' | 'leaf' | 'container' | 'select' | 'select-content';
+type Family = 'card' | 'card-header' | 'tabs' | 'leaf' | 'container' | 'select' | 'select-content' | 'sidebar-provider' | 'sidebar' | 'sidebar-content' | 'sidebar-group' | 'sidebar-group-content' | 'sidebar-menu' | 'sidebar-menu-item' | 'sidebar-menu-button';
 
 const componentFamily: Record<string, Family> = {
   Button: 'leaf',
@@ -55,6 +56,22 @@ const componentFamily: Record<string, Family> = {
   TabsList: 'card-header', // shares card-header-like restrictions
   TabsTrigger: 'leaf',
   TabsContent: 'container',
+  // Sidebar family
+  SidebarProvider: 'sidebar-provider',
+  Sidebar: 'sidebar',
+  SidebarHeader: 'container',
+  SidebarContent: 'sidebar-content',
+  SidebarFooter: 'container',
+  SidebarRail: 'leaf',
+  SidebarInset: 'container',
+  SidebarTrigger: 'leaf',
+  SidebarSeparator: 'leaf',
+  SidebarGroup: 'sidebar-group',
+  SidebarGroupLabel: 'leaf',
+  SidebarGroupContent: 'sidebar-group-content',
+  SidebarMenu: 'sidebar-menu',
+  SidebarMenuItem: 'sidebar-menu-item',
+  SidebarMenuButton: 'sidebar-menu-button',
 };
 
 const LEAF_FAMILIES: Family[] = ['leaf'];
@@ -94,6 +111,46 @@ export function canContain(parentId: string, childId: string | null): boolean {
     return ['TabsList', 'TabsContent'].includes(childId);
   }
 
+  // SidebarProvider → только Sidebar | SidebarInset
+  if (pf === 'sidebar-provider') {
+    return ['Sidebar', 'SidebarInset'].includes(childId);
+  }
+
+  // Sidebar → только SidebarHeader | SidebarContent | SidebarFooter | SidebarRail | SidebarSeparator
+  if (pf === 'sidebar') {
+    return ['SidebarHeader', 'SidebarContent', 'SidebarFooter', 'SidebarRail', 'SidebarSeparator'].includes(childId);
+  }
+
+  // SidebarContent → только SidebarGroup
+  if (pf === 'sidebar-content') {
+    return childId === 'SidebarGroup';
+  }
+
+  // SidebarGroup → только SidebarGroupLabel | SidebarGroupContent
+  if (pf === 'sidebar-group') {
+    return ['SidebarGroupLabel', 'SidebarGroupContent'].includes(childId);
+  }
+
+  // SidebarGroupContent → только SidebarMenu
+  if (pf === 'sidebar-group-content') {
+    return childId === 'SidebarMenu';
+  }
+
+  // SidebarMenu → только SidebarMenuItem
+  if (pf === 'sidebar-menu') {
+    return childId === 'SidebarMenuItem';
+  }
+
+  // SidebarMenuItem → только SidebarMenuButton
+  if (pf === 'sidebar-menu-item') {
+    return childId === 'SidebarMenuButton';
+  }
+
+  // SidebarMenuButton → только текст/иконки (CodeNode/TextNode) или layout-заполнители
+  if (pf === 'sidebar-menu-button') {
+    return childId === null;
+  }
+
   // Leaf-компоненты не принимают детей
   if (LEAF_FAMILIES.includes(pf)) return false;
 
@@ -110,11 +167,20 @@ export const REGISTRY: ComponentDef[] = [
     id: 'Button',
     module: '@/components/ui/button',
     namedExport: 'Button',
-    isContainer: false,
+    isContainer: true,
     defaults: {
       variants: { variant: 'default', size: 'default' },
+      children: () => [
+        { kind: 'text', id: '' as NodeId, text: 'Button' } as unknown as SpecNode,
+      ],
     },
     inspector: [
+      {
+        kind: 'text',
+        target: 'text',
+        prop: 'text',
+        label: 'Text',
+      },
       {
         kind: 'select',
         target: 'variant',
@@ -316,12 +382,20 @@ export const REGISTRY: ComponentDef[] = [
     namedExport: 'Card',
     isContainer: true,
     defaults: {
+      className: 'w-full',
       children: () => [
         { kind: 'component', id: '' as NodeId /* placeholder, replaced by createNode() */, component: 'CardHeader', children: [] },
         { kind: 'component', id: '' as NodeId /* placeholder, replaced by createNode() */, component: 'CardContent', children: [] },
       ],
     },
-    inspector: [{ kind: 'spacing', label: 'Padding' }],
+    inspector: [
+      { kind: 'spacing', label: 'Padding' },
+      {
+        kind: 'width',
+        label: 'Width',
+        options: ['w-full', 'w-auto', 'w-80', 'w-96', 'w-[300px]', 'w-[400px]', 'w-[500px]'],
+      },
+    ],
   },
   {
     id: 'CardHeader',
@@ -501,6 +575,175 @@ export const REGISTRY: ComponentDef[] = [
         target: 'prop',
         prop: 'value',
         label: 'Value',
+      },
+    ],
+  },
+  // ── Sidebar components ──
+  {
+    id: 'SidebarProvider',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarProvider',
+    isContainer: true,
+    defaults: {
+      variants: { defaultOpen: 'true' },
+    },
+    inspector: [],
+  },
+  {
+    id: 'Sidebar',
+    module: '@/components/ui/sidebar',
+    namedExport: 'Sidebar',
+    isContainer: true,
+    defaults: {
+      variants: { collapsible: 'icon', side: 'left', variant: 'sidebar' },
+    },
+    inspector: [
+      {
+        kind: 'select',
+        target: 'variant',
+        prop: 'collapsible',
+        label: 'Collapsible',
+        options: ['offcanvas', 'icon', 'none'],
+      },
+      {
+        kind: 'select',
+        target: 'variant',
+        prop: 'side',
+        label: 'Side',
+        options: ['left', 'right'],
+      },
+      {
+        kind: 'select',
+        target: 'variant',
+        prop: 'variant',
+        label: 'Variant',
+        options: ['sidebar', 'floating', 'inset'],
+      },
+    ],
+  },
+  {
+    id: 'SidebarHeader',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarHeader',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarContent',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarContent',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarFooter',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarFooter',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarRail',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarRail',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarInset',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarInset',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarTrigger',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarTrigger',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarSeparator',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarSeparator',
+    isContainer: false,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarGroup',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarGroup',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarGroupLabel',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarGroupLabel',
+    isContainer: false,
+    defaults: {
+      children: () => [
+        { kind: 'text', id: '' as NodeId, text: 'Section' } as unknown as SpecNode,
+      ],
+    },
+    inspector: [
+      {
+        kind: 'text',
+        target: 'text',
+        prop: 'text',
+        label: 'Label',
+      },
+    ],
+  },
+  {
+    id: 'SidebarGroupContent',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarGroupContent',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarMenu',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarMenu',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarMenuItem',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarMenuItem',
+    isContainer: true,
+    defaults: {},
+    inspector: [],
+  },
+  {
+    id: 'SidebarMenuButton',
+    module: '@/components/ui/sidebar',
+    namedExport: 'SidebarMenuButton',
+    isContainer: false,
+    defaults: {
+      children: () => [
+        { kind: 'text', id: '' as NodeId, text: 'Menu Item' } as unknown as SpecNode,
+      ],
+    },
+    inspector: [
+      {
+        kind: 'text',
+        target: 'text',
+        prop: 'text',
+        label: 'Label',
       },
     ],
   },

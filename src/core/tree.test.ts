@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { SpecNode, LayoutNode, ComponentNode, TextNode } from './ir';
+import type { SpecNode, LayoutNode, ComponentNode, TextNode, NodeId } from './ir';
 import {
   mapNode,
   insertNode,

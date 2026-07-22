@@ -1,0 +1,85 @@
+{
+  "$preset": "dashboard",
+  "$description": "Sidebar (flex-row) + content area with grid widgets",
+  "root": {
+    "kind": "layout",
+    "id": "PRESET_ROOT",
+    "display": "flex",
+    "direction": "row",
+    "gap": 0,
+    "className": "min-h-screen",
+    "children": [
+      {
+        "kind": "layout",
+        "id": "PRESET_1",
+        "display": "flex",
+        "direction": "column",
+        "gap": 2,
+        "className": "w-64 border-r p-4 bg-muted",
+        "children": [
+          { "kind": "text", "id": "PRESET_2", "text": "Sidebar", "as": "h2", "className": "text-lg font-semibold" },
+          { "kind": "component", "id": "PRESET_3", "component": "Separator" },
+          { "kind": "component", "id": "PRESET_4", "component": "Button", "variants": { "variant": "ghost" }, "children": [
+            { "kind": "text", "id": "PRESET_5", "text": "Dashboard" }
+          ]},
+          { "kind": "component", "id": "PRESET_6", "component": "Button", "variants": { "variant": "ghost" }, "children": [
+            { "kind": "text", "id": "PRESET_7", "text": "Analytics" }
+          ]},
+          { "kind": "component", "id": "PRESET_8", "component": "Button", "variants": { "variant": "ghost" }, "children": [
+            { "kind": "text", "id": "PRESET_9", "text": "Settings" }
+          ]}
+        ]
+      },
+      {
+        "kind": "layout",
+        "id": "PRESET_10",
+        "display": "flex",
+        "direction": "column",
+        "gap": 6,
+        "className": "flex-1 p-6",
+        "children": [
+          { "kind": "text", "id": "PRESET_11", "text": "Dashboard", "as": "h1", "className": "text-3xl font-bold" },
+          {
+            "kind": "layout",
+            "id": "PRESET_12",
+            "display": "grid",
+            "gap": 4,
+            "className": "grid-cols-3",
+            "children": [
+              { "kind": "component", "id": "PRESET_13", "component": "Card", "children": [
+                { "kind": "component", "id": "PRESET_14", "component": "CardHeader", "children": [
+                  { "kind": "component", "id": "PRESET_15", "component": "CardTitle", "children": [
+                    { "kind": "text", "id": "PRESET_16", "text": "Widget 1" }
+                  ]}
+                ]},
+                { "kind": "component", "id": "PRESET_17", "component": "CardContent", "children": [
+                  { "kind": "text", "id": "PRESET_18", "text": "Content" }
+                ]}
+              ]},
+              { "kind": "component", "id": "PRESET_19", "component": "Card", "children": [
+                { "kind": "component", "id": "PRESET_20", "component": "CardHeader", "children": [
+                  { "kind": "component", "id": "PRESET_21", "component": "CardTitle", "children": [
+                    { "kind": "text", "id": "PRESET_22", "text": "Widget 2" }
+                  ]}
+                ]},
+                { "kind": "component", "id": "PRESET_23", "component": "CardContent", "children": [
+                  { "kind": "text", "id": "PRESET_24", "text": "Content" }
+                ]}
+              ]},
+              { "kind": "component", "id": "PRESET_25", "component": "Card", "children": [
+                { "kind": "component", "id": "PRESET_26", "component": "CardHeader", "children": [
+                  { "kind": "component", "id": "PRESET_27", "component": "CardTitle", "children": [
+                    { "kind": "text", "id": "PRESET_28", "text": "Widget 3" }
+                  ]}
+                ]},
+                { "kind": "component", "id": "PRESET_29", "component": "CardContent", "children": [
+                  { "kind": "text", "id": "PRESET_30", "text": "Content" }
+                ]}
+              ]}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

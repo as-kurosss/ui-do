@@ -1,33 +1,42 @@
-# BN-Builder
+# ui-do
 
-Визуальный конструктор интерфейсов на React. Позволяет собирать экраны из shadcn/ui-компонентов перетаскиванием и детерминированно генерировать готовый frontend-проект.
+Headless-пайплайн: JSON-спецификация → детерминированный codegen → готовый
+React + Tailwind + shadcn/ui проект.
 
-## Стек
+## Как это работает
 
-- **Ядро:** Vite 7, React 19, TypeScript 5 (strict)
-- **Стили:** Tailwind CSS 4 (CSS-first), shadcn/ui
-- **Стор:** Zustand 5 + zundo (undo/redo)
-- **Drag-and-drop:** @dnd-kit
-- **Тесты:** Vitest
-
-## Быстрый старт
-
-```bash
-npm install
-npm run dev
-```
+1. AI-агент (или человек) пишет JSON-spec по схеме
+2. `npx tsx src/cli.ts --spec spec.json --out ./my-app`
+3. `cd ./my-app && npm install && npm run dev`
 
 ## Команды
 
-- `npm run dev` — Dev-сервер
-- `npm test` — Запуск тестов
-- `npm run lint` — Линтинг (oxlint)
-- `npx tsc --noEmit` — Проверка TS
+- `npm run generate -- --spec <file> --out <dir>` — генерация проекта
+- `npm run preview -- <file>` — генерация + живой preview
+- `npm run export -- --spec <file> --out <dir>` — генерация + установка зависимостей + валидация
+- `npm test` — тесты (vitest)
+- `npm run lint` — линтинг (oxlint)
+- `npx tsc --noEmit` — проверка TypeScript
 
-## Экспорт
+## Структура
 
-Собранный проект экспортируется в отдельную папку:
+- `src/core/` — IR, реестр компонентов, tree-операции, валидация
+- `src/codegen/` — детерминированный codegen, LOGIC-контракт
+- `src/schema.ts` — zod-валидация входного JSON
+- `src/presets/` — layout-пресеты (6 готовых шаблонов)
+- `src/cli.ts` — CLI точка входа (generate)
+- `src/preview.ts` — скрипт живого preview
+- `template/` — шаблон Vite-проекта для экспорта
+- `AGENT-PROMPT.md` — инструкция для AI-агента
+
+## Для AI-агентов
+
+Читай `AGENT-PROMPT.md`. Генерируй JSON по схеме. Валидируй перед отправкой.
+
+## Пример
 
 ```bash
-npx tsx scripts/export.ts --spec examples/test-project.json --out ../my-app
+# Сгенерировать проект из примера
+tsx src/cli.ts --spec examples/test-project.json --out /tmp/my-app
+cd /tmp/my-app && npm install && npm run dev
 ```

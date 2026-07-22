@@ -262,7 +262,7 @@ export function createDefaultRoot(id: NodeId): LayoutNode {
     display: 'flex',
     direction: 'column',
     gap: 4,
-    align: 'stretch',
+    align: 'start',
     className: 'min-h-screen',
     children: [],
   };

@@ -37,6 +37,8 @@ export interface CodeNode {
   id: NodeId;
   label: string; // 'CustomChart'
   source: string; // хранится и выводится дословно, никогда не трансформируется
+  /** Optional block component id for live rendering inside the editor canvas. */
+  blockId?: string;
 }
 
 export type SpecNode = ComponentNode | LayoutNode | TextNode | CodeNode;
@@ -73,7 +75,9 @@ export interface ScreenSpec {
   name: string; // 'Login' → файл Login.tsx
   route: string; // '/login'
   tokens: TokenSet;
-  root: LayoutNode; // корень — всегда layout, неудаляем
+  root: LayoutNode;
+  blockLogic?: string;
+  blockExtraImports?: string[];
 }
 
 export interface ProjectSpec {

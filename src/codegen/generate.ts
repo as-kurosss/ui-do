@@ -8,6 +8,13 @@ import { defaultStubs, preserveLogic } from './logic';
 export interface GenerateOptions {
   /** Previous TSX to preserve LOGIC block from. */
   prevTsx?: string;
+  /** Additional import lines needed by CodeNode blocks. */
+  extraImports?: string[];
+  /**
+   * Custom LOGIC block content (with markers) that replaces default stubs.
+   * Used by block templates that provide custom functions, data, and hooks.
+   */
+  blockLogic?: string;
 }
 
 export interface GenerateResult {
@@ -239,7 +246,8 @@ function generateNode(node: SpecNode, indent: number): string {
 
 // ── CSS generation (Section 7 format) ──
 
-function generateCss(spec: ScreenSpec): string {
+/** Generate index.css content (Tailwind v4 @theme format) for a screen. */
+export function generateCss(spec: ScreenSpec): string {
   const { tokens } = spec;
   const { colors, radius, fonts } = tokens;
 
@@ -258,6 +266,14 @@ function generateCss(spec: ScreenSpec): string {
 
   // Derived variables (shadcn/ui compatibility)
   lines.push('  --card-foreground: var(--foreground);');
+  lines.push('  --sidebar: oklch(0.985 0 0);');
+  lines.push('  --sidebar-foreground: oklch(0.145 0 0);');
+  lines.push('  --sidebar-primary: oklch(0.205 0 0);');
+  lines.push('  --sidebar-primary-foreground: oklch(0.985 0 0);');
+  lines.push('  --sidebar-accent: oklch(0.97 0 0);');
+  lines.push('  --sidebar-accent-foreground: oklch(0.205 0 0);');
+  lines.push('  --sidebar-border: oklch(0.922 0 0);');
+  lines.push('  --sidebar-ring: oklch(0.87 0 0);');
   lines.push('  --popover: var(--background);');
   lines.push('  --popover-foreground: var(--foreground);');
   lines.push('  --secondary: var(--muted);');
@@ -280,6 +296,15 @@ function generateCss(spec: ScreenSpec): string {
 
   // Derived color mappings
   lines.push('  --color-card-foreground: var(--card-foreground);');
+  lines.push('  --color-ring: var(--ring);');
+  lines.push('  --color-sidebar: var(--sidebar);');
+  lines.push('  --color-sidebar-foreground: var(--sidebar-foreground);');
+  lines.push('  --color-sidebar-primary: var(--sidebar-primary);');
+  lines.push('  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);');
+  lines.push('  --color-sidebar-accent: var(--sidebar-accent);');
+  lines.push('  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);');
+  lines.push('  --color-sidebar-border: var(--sidebar-border);');
+  lines.push('  --color-sidebar-ring: var(--sidebar-ring);');
   lines.push('  --color-popover: var(--popover);');
   lines.push('  --color-popover-foreground: var(--popover-foreground);');
   lines.push('  --color-secondary: var(--secondary);');
@@ -319,7 +344,8 @@ const FONT_WEIGHTS: Record<string, string> = {
   'JetBrains Mono': 'wght@100..800',
 };
 
-function generateHtmlHead(spec: ScreenSpec): string {
+/** Generate Google Fonts <link> tag for a screen's font tokens. */
+export function generateHtmlHead(spec: ScreenSpec): string {
   const { fonts } = spec.tokens;
   const names = [fonts.sans, fonts.display].filter(Boolean) as string[];
 
@@ -331,6 +357,32 @@ function generateHtmlHead(spec: ScreenSpec): string {
   if (!families) return '';
 
   return `<link href="https://fonts.googleapis.com/css2?${families}&display=swap" rel="stylesheet" />`;
+}
+
+/** Generate App.tsx content with react-router routes for all screens. */
+export function generateAppTsx(screens: ScreenSpec[]): string {
+  const imports = screens
+    .map((s) => {
+      const name = s.name.replace(/[^a-zA-Z0-9_]/g, '') || 'Screen';
+      return `import ${name} from './screens/${name}.js'`;
+    })
+    .join('\n');
+
+  const routes = screens
+    .map((s) => {
+      const name = s.name.replace(/[^a-zA-Z0-9_]/g, '') || 'Screen';
+      return `        <Route path="${s.route}" element={<${name} />} />`;
+    })
+    .join('\n');
+
+  return `import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'\n\n${imports}\n\nfunction App() {\n  return (\n    <BrowserRouter>\n      <Routes>\n${routes}\n        <Route path="*" element={<Navigate to="${screens[0]?.route ?? '/'}" replace />} />\n      </Routes>\n    </BrowserRouter>\n  )\n}\n\nexport default App\n`;
+}
+
+/** Generate index.html with title and font link. */
+export function generateIndexHtml(templateHtml: string, title: string, fontLink: string): string {
+  return templateHtml
+    .replace('{{TITLE}}', title)
+    .replace('{{FONT_LINK}}', fontLink);
 }
 
 // ── Main entry point ──
@@ -349,9 +401,13 @@ export function generateScreen(spec: ScreenSpec, opts?: GenerateOptions): Genera
   // ── Build imports ──
   const importGroups = buildImports(spec);
   const importLines = importGroups.map((g) => `import { ${g.names.join(', ')} } from '${g.path}';`);
+  const extraImports = opts?.extraImports ?? spec.blockExtraImports;
+  if (extraImports) {
+    importLines.push(...extraImports);
+  }
 
   // ── Build LOGIC stubs ──
-  const logicBlock = defaultStubs(spec);
+  const logicBlock = opts?.blockLogic ?? spec.blockLogic ?? defaultStubs(spec);
 
   // ── Build component body ──
   const rootTsx = generateNode(spec.root, 2);

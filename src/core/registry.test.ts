@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { canContain, REGISTRY, REGISTRY_BY_ID, getComponentDef } from './registry';
 
 describe('REGISTRY', () => {
-  it('contains all 26 MVP components including Select sub-entries', () => {
+  it('contains all registered components', () => {
     const ids = REGISTRY.map((def) => def.id).sort();
     expect(ids).toEqual([
       'Alert',
@@ -25,6 +25,21 @@ describe('REGISTRY', () => {
       'SelectTrigger',
       'SelectValue',
       'Separator',
+      'Sidebar',
+      'SidebarContent',
+      'SidebarFooter',
+      'SidebarGroup',
+      'SidebarGroupContent',
+      'SidebarGroupLabel',
+      'SidebarHeader',
+      'SidebarInset',
+      'SidebarMenu',
+      'SidebarMenuButton',
+      'SidebarMenuItem',
+      'SidebarProvider',
+      'SidebarRail',
+      'SidebarSeparator',
+      'SidebarTrigger',
       'Switch',
       'Tabs',
       'TabsContent',
