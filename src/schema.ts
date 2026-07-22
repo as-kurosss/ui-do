@@ -46,6 +46,10 @@ export const layoutNodeSchema: z.ZodType = z.lazy(() =>
   })
 );
 
+// NOTE: Must use z.union, not z.discriminatedUnion. The variant schemas
+// (componentNodeSchema, layoutNodeSchema) are themselves wrapped in z.lazy
+// for recursive children, and z.discriminatedUnion tries to eagerly read
+// the discriminator from each variant, which fails on lazy schemas.
 export const specNodeSchema: z.ZodType = z.lazy(() =>
   z.union([
     textNodeSchema,

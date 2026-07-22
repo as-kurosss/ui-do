@@ -28,7 +28,9 @@
       "name": "Login",          // → файл Login.tsx (PascalCase, без пробелов)
       "route": "/login",        // Начинается с /
       "tokens": { /* см. Цветовые токены */ },
-      "root": { /* LayoutNode — корень экрана */ }
+      "root": { /* LayoutNode — корень экрана */ },
+      "blockLogic": "// ── BN:LOGIC:BEGIN ── ...",  // опционально: кастомный LOGIC-блок
+      "blockExtraImports": ["import ..."]           // опционально: доп. импорты
     }
   ]
 }
@@ -95,7 +97,8 @@
   "kind": "code",
   "id": "n4",
   "label": "CustomChart",
-  "source": "<LineChart data={data} />"
+  "source": "<LineChart data={data} />",
+  "blockId": "my-chart-block"        // опционально: ID блока для кастомной логики
 }
 ```
 
